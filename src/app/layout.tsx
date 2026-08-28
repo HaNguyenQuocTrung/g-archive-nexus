@@ -23,6 +23,12 @@ export const metadata: Metadata = {
     template: "%s // G-Archive Nexus",
   },
 
+  icons: {
+    icon: "/icon.svg",
+    shortcut: "/icon.svg",
+    apple: "/icon.svg",
+  },
+
   description:
     "A fan-made Mobile Suit intelligence database covering Gundam timelines, series, pilots, variants, specifications and armaments.",
 

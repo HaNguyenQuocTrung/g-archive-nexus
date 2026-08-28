@@ -3,14 +3,17 @@ import charZakuII from "@/data/mobile-suits/ms-06s-zaku-ii.json";
 import rx782Gundam from "@/data/mobile-suits/rx-78-2.json";
 import freedomGundam from "@/data/mobile-suits/zgmf-x10a-freedom.json";
 
+import { mobileSuitSchema } from "@/lib/validation/schemas";
 import type { MobileSuit } from "@/types";
 
-const mobileSuits: MobileSuit[] = [
-  rx782Gundam,
-  charZakuII,
-  strikeGundam,
-  freedomGundam,
-] as MobileSuit[];
+const mobileSuits: MobileSuit[] = mobileSuitSchema
+  .array()
+  .parse([
+    rx782Gundam,
+    charZakuII,
+    strikeGundam,
+    freedomGundam,
+  ]);
 
 export function getMobileSuits(): MobileSuit[] {
   return mobileSuits;
@@ -19,7 +22,9 @@ export function getMobileSuits(): MobileSuit[] {
 export function getMobileSuitById(
   id: string,
 ): MobileSuit | undefined {
-  return mobileSuits.find((mobileSuit) => mobileSuit.id === id);
+  return mobileSuits.find(
+    (mobileSuit) => mobileSuit.id === id,
+  );
 }
 
 export function getMobileSuitsBySeriesId(
@@ -34,6 +39,7 @@ export function getMobileSuitsByTimelineId(
   timelineId: string,
 ): MobileSuit[] {
   return mobileSuits.filter(
-    (mobileSuit) => mobileSuit.timelineId === timelineId,
+    (mobileSuit) =>
+      mobileSuit.timelineId === timelineId,
   );
 }

@@ -1,18 +1,11 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  Building2,
-  Radio,
-  UserRound,
-} from "lucide-react";
+import { ArrowLeft, Building2, Radio, UserRound } from "lucide-react";
 
 import FormSwitcher from "@/components/mobile-suit/FormSwitcher";
-import { getCharacters } from "@/lib/data/getCharacters";
-import {
-  getMobileSuitById,
-  getMobileSuits,
-} from "@/lib/data/getMobileSuits";
+import { getCharacterById, getCharacters } from "@/lib/data/getCharacters";
+import { getPilotLogsByMobileSuitId } from "@/lib/data/getPilotLogs";
+import { getMobileSuitById, getMobileSuits } from "@/lib/data/getMobileSuits";
 import { getSeriesById } from "@/lib/data/getSeries";
 import { getTimelineById } from "@/lib/data/getTimelines";
 
@@ -28,9 +21,7 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: MobileSuitDetailPageProps) {
+export async function generateMetadata({ params }: MobileSuitDetailPageProps) {
   const { mobileSuitSlug } = await params;
   const mobileSuit = getMobileSuitById(mobileSuitSlug);
 
@@ -63,16 +54,35 @@ export default async function MobileSuitDetailPage({
     .filter((series) => series !== undefined);
 
   const assignedPilots = getCharacters().filter((character) =>
-    character.eras.some((era) =>
-      era.pilotedUnitIds.includes(mobileSuit.id),
-    ),
+    character.eras.some((era) => era.pilotedUnitIds.includes(mobileSuit.id)),
   );
+
+  const variantPilotAssignments = getPilotLogsByMobileSuitId(
+    mobileSuit.id,
+  ).flatMap((log) => {
+    const character = getCharacterById(log.characterId);
+
+    if (!character) {
+      return [];
+    }
+
+    return [
+      {
+        variantId: log.variantId,
+        characterId: character.id,
+        characterName: character.canonicalName,
+        notes: log.notes,
+      },
+    ];
+  });
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <header className="border-b border-slate-800">
-        <div className="mx-auto flex max-w-7xl items-center 
-justify-between px-6 py-6">
+        <div
+          className="mx-auto flex max-w-7xl items-center 
+justify-between px-6 py-6"
+        >
           <Link
             href="/mobile-suits"
             className="inline-flex items-center gap-2 font-mono text-xs 
@@ -82,45 +92,61 @@ uppercase tracking-wider text-slate-500 hover:text-cyan-400"
             Mobile Suit database
           </Link>
 
-          <div className="flex items-center gap-2 font-mono text-[10px] 
-uppercase tracking-wider text-emerald-400">
+          <div
+            className="flex items-center gap-2 font-mono text-[10px] 
+uppercase tracking-wider text-emerald-400"
+          >
             <Radio size={13} className="animate-pulse" />
             Mechanical record verified
           </div>
         </div>
       </header>
 
-      <section className="relative overflow-hidden border-b 
-border-slate-800">
-        <div className="absolute inset-0 
+      <section
+        className="relative overflow-hidden border-b 
+border-slate-800"
+      >
+        <div
+          className="absolute inset-0 
 bg-[linear-gradient(rgba(6,182,212,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.04)_1px,transparent_1px)] 
-bg-[size:48px_48px]" />
+bg-[size:48px_48px]"
+        />
 
         <div className="relative mx-auto max-w-7xl px-6 py-20">
           <div className="flex flex-wrap items-center gap-3">
-            <span className="border border-cyan-400/30 px-3 py-1 font-mono 
-text-xs uppercase tracking-wider text-cyan-400">
+            <span
+              className="border border-cyan-400/30 px-3 py-1 font-mono 
+text-xs uppercase tracking-wider text-cyan-400"
+            >
               {timeline?.code ?? "Unknown timeline"}
             </span>
 
-            <span className="font-mono text-xs uppercase tracking-wider 
-text-emerald-400">
+            <span
+              className="font-mono text-xs uppercase tracking-wider 
+text-emerald-400"
+            >
               ● {mobileSuit.status}
             </span>
 
-            <span className="font-mono text-xs uppercase tracking-wider 
-text-slate-500">
+            <span
+              className="font-mono text-xs uppercase tracking-wider 
+text-slate-500"
+            >
               {mobileSuit.variants.length} configurations
             </span>
           </div>
 
-          <p className="mt-9 font-mono text-lg font-bold tracking-[0.3em] 
-text-amber-400 md:text-2xl">
+          <p
+            className="mt-9 font-mono text-lg font-bold tracking-[0.3em] 
+text-amber-400 md:text-2xl"
+          >
             {mobileSuit.modelNumber}
           </p>
 
-          <h1 className="mt-4 text-5xl font-black uppercase leading-none 
-md:text-7xl">
+          <h1
+            className="mt-4 text-5xl font-black uppercase leading-none 
+md:text-7xl"
+          >
             {mobileSuit.baseName}
           </h1>
 
@@ -145,19 +171,22 @@ md:text-7xl">
       </section>
 
       <section className="mx-auto max-w-7xl px-6 py-14">
-        <FormSwitcher variants={mobileSuit.variants} />
+        <FormSwitcher
+          variants={mobileSuit.variants}
+          pilotAssignments={variantPilotAssignments}
+        />
       </section>
 
       <section className="border-t border-slate-800">
         <div className="mx-auto max-w-7xl px-6 py-16">
-          <p className="font-mono text-xs uppercase tracking-[0.3em] 
-text-amber-400">
+          <p
+            className="font-mono text-xs uppercase tracking-[0.3em] 
+text-amber-400"
+          >
             Cross-linked Records
           </p>
 
-          <h2 className="mt-3 text-3xl font-bold uppercase">
-            Assigned Pilots
-          </h2>
+          <h2 className="mt-3 text-3xl font-bold uppercase">Assigned Pilots</h2>
 
           {assignedPilots.length > 0 ? (
             <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -168,8 +197,10 @@ text-amber-400">
                   className="group flex items-center gap-5 border 
 border-slate-800 bg-[#0F172A] p-5 transition hover:border-cyan-400/60"
                 >
-                  <div className="flex h-14 w-14 items-center 
-justify-center border border-slate-700 bg-[#070A0F]">
+                  <div
+                    className="flex h-14 w-14 items-center 
+justify-center border border-slate-700 bg-[#070A0F]"
+                  >
                     <UserRound
                       size={25}
                       className="text-slate-600 group-hover:text-cyan-400"
@@ -177,13 +208,17 @@ justify-center border border-slate-700 bg-[#070A0F]">
                   </div>
 
                   <div>
-                    <p className="font-bold uppercase 
-group-hover:text-cyan-400">
+                    <p
+                      className="font-bold uppercase 
+group-hover:text-cyan-400"
+                    >
                       {pilot.canonicalName}
                     </p>
 
-                    <p className="mt-1 font-mono text-[10px] uppercase 
-tracking-wider text-slate-500">
+                    <p
+                      className="mt-1 font-mono text-[10px] uppercase 
+tracking-wider text-slate-500"
+                    >
                       Open personnel record
                     </p>
                   </div>
@@ -191,18 +226,24 @@ tracking-wider text-slate-500">
               ))}
             </div>
           ) : (
-            <div className="mt-8 border border-dashed border-slate-700 
-p-8">
-              <p className="font-mono text-xs uppercase tracking-wider 
-text-slate-600">
+            <div
+              className="mt-8 border border-dashed border-slate-700 
+p-8"
+            >
+              <p
+                className="font-mono text-xs uppercase tracking-wider 
+text-slate-600"
+              >
                 No assigned pilot records found
               </p>
             </div>
           )}
 
           <div className="mt-12">
-            <p className="font-mono text-xs uppercase tracking-[0.25em] 
-text-slate-500">
+            <p
+              className="font-mono text-xs uppercase tracking-[0.25em] 
+text-slate-500"
+            >
               Series appearances
             </p>
 
@@ -232,15 +273,13 @@ interface ArchiveInformationProps {
   icon?: React.ReactNode;
 }
 
-function ArchiveInformation({
-  label,
-  value,
-  icon,
-}: ArchiveInformationProps) {
+function ArchiveInformation({ label, value, icon }: ArchiveInformationProps) {
   return (
     <div className="border border-slate-800 bg-[#0F172A]/90 p-5">
-      <div className="flex items-center gap-2 font-mono text-[10px] 
-uppercase tracking-wider text-slate-500">
+      <div
+        className="flex items-center gap-2 font-mono text-[10px] 
+uppercase tracking-wider text-slate-500"
+      >
         {icon}
         {label}
       </div>

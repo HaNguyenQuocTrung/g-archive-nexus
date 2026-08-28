@@ -1,3 +1,4 @@
+import aegisGundam from "@/data/mobile-suits/gat-x303-aegis.json";
 import strikeGundam from "@/data/mobile-suits/gat-x105-strike.json";
 import charZakuII from "@/data/mobile-suits/ms-06s-zaku-ii.json";
 import rx782Gundam from "@/data/mobile-suits/rx-78-2.json";
@@ -12,6 +13,7 @@ const mobileSuits: MobileSuit[] = mobileSuitSchema
     rx782Gundam,
     charZakuII,
     strikeGundam,
+    aegisGundam,
     freedomGundam,
   ]);
 

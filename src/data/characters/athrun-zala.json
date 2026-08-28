@@ -12,7 +12,9 @@
       "faction": "ZAFT",
       "rank": "Red Coat Pilot",
       "biography": "A skilled ZAFT pilot and childhood friend of Kira Yamato. The war forces Athrun and Kira to confront one another from opposing sides.",
-      "pilotedUnitIds": []
+      "pilotedUnitIds": [
+        "gat-x303-aegis"
+      ]
     }
   ],
   "status": "published"

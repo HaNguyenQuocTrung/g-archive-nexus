@@ -1,0 +1,101 @@
+{
+  "id": "stts-909-rising-freedom",
+  "baseName": "Rising Freedom Gundam",
+  "modelNumber": "STTS-909",
+  "manufacturer": "Orb Union",
+  "timelineId": "cosmic-era",
+  "seriesIds": [
+    "gundam-seed-freedom"
+  ],
+  "factionIds": [
+    "compass"
+  ],
+  "variants": [
+    {
+      "id": "mobile-suit-mode",
+      "formName": "Rising Freedom Mobile Suit Mode",
+      "description": "A transformable Mobile Suit operated by Kira Yamato as part of COMPASS during the C.E. 75 conflict.",
+      "specs": {
+        "generatorType": "Ultracompact Energy Battery",
+        "armorMaterial": "Variable Phase Shift Armor",
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "rising-beam-rifle",
+          "name": "High-Energy Beam Rifle",
+          "mountingLocation": "Handheld",
+          "quantity": 1,
+          "description": "The primary handheld ranged weapon of the Rising Freedom."
+        },
+        {
+          "id": "rising-beam-saber",
+          "name": "Beam Saber",
+          "mountingLocation": "Waist storage",
+          "quantity": 2,
+          "description": "Close-combat beam weapons carried by the Rising Freedom."
+        },
+        {
+          "id": "rising-shield",
+          "name": "Beam Shield",
+          "mountingLocation": "Arm",
+          "quantity": 1,
+          "description": "A defensive shield system also used as part of the transformation configuration."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "variable-phase-shift-armor",
+          "name": "Variable Phase Shift Armor",
+          "description": "An advanced electrically activated armor system."
+        },
+        {
+          "id": "rising-transformation",
+          "name": "Mobile Armor Transformation",
+          "description": "Allows the Rising Freedom to transform into a high-speed Mobile Armor configuration."
+        }
+      ],
+      "gallery": []
+    },
+    {
+      "id": "mobile-armor-mode",
+      "formName": "Rising Freedom Mobile Armor Mode",
+      "description": "A transformed high-speed flight configuration used for rapid deployment and aerial operations.",
+      "specs": {
+        "generatorType": "Ultracompact Energy Battery",
+        "armorMaterial": "Variable Phase Shift Armor",
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "rising-beam-rifle",
+          "name": "High-Energy Beam Rifle",
+          "mountingLocation": "Mobile Armor frame",
+          "quantity": 1,
+          "description": "The main ranged weapon retained during transformation."
+        },
+        {
+          "id": "rising-shield",
+          "name": "Beam Shield",
+          "mountingLocation": "Transformation frame",
+          "quantity": 1,
+          "description": "A shield component integrated into the Mobile Armor silhouette."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "mobile-armor-mode",
+          "name": "Mobile Armor Mode",
+          "description": "A flight-oriented form designed for high-speed atmospheric movement."
+        },
+        {
+          "id": "variable-phase-shift-armor",
+          "name": "Variable Phase Shift Armor",
+          "description": "An advanced electrically activated armor system."
+        }
+      ],
+      "gallery": []
+    }
+  ],
+  "status": "published"
+}

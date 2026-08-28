@@ -1,3 +1,5 @@
+import kiraRisingFreedomMa from "@/data/pilot-logs/kira-rising-freedom-ma.json";
+import kiraRisingFreedomMs from "@/data/pilot-logs/kira-rising-freedom-ms.json";
 import athrunAegisMa from "@/data/pilot-logs/athrun-aegis-ma-mode.json";
 import athrunAegisMs from "@/data/pilot-logs/athrun-aegis-ms-mode.json";
 import kiraLauncherStrike from "@/data/pilot-logs/kira-launcher-strike.json";
@@ -23,6 +25,8 @@ const pilotLogs: PilotLog[] = pilotLogSchema
     kiraFreedom,
     athrunAegisMs,
     athrunAegisMa,
+    kiraRisingFreedomMs,
+    kiraRisingFreedomMa,
   ]);
 
 export function getPilotLogs(): PilotLog[] {

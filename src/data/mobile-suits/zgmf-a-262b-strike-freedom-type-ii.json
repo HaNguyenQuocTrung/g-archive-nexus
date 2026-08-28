@@ -1,0 +1,152 @@
+{
+  "id": "zgmf-a-262b-strike-freedom-type-ii",
+  "baseName": "Strike Freedom Gundam Type II",
+  "modelNumber": "ZGMF/A-262B",
+  "manufacturer": "Terminal",
+  "timelineId": "cosmic-era",
+  "seriesIds": [
+    "gundam-seed-freedom"
+  ],
+  "factionIds": [
+    "terminal",
+    "compass"
+  ],
+  "variants": [
+    {
+      "id": "standard",
+      "formName": "Strike Freedom Gundam Type II",
+      "description": "An upgraded Strike Freedom Gundam restored and modified for the C.E. 75 conflict.",
+      "specs": {
+        "generatorType": "Nuclear Reactor",
+        "armorMaterial": "Variable Phase Shift Armor",
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "type2-beam-rifle",
+          "name": "High-Energy Beam Rifle",
+          "mountingLocation": "Handheld",
+          "quantity": 2,
+          "description": "Dual beam rifles capable of being connected for concentrated fire."
+        },
+        {
+          "id": "type2-beam-saber",
+          "name": "Beam Saber",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Close-combat beam weapons capable of forming a double-ended saber."
+        },
+        {
+          "id": "type2-railgun",
+          "name": "Waist Railgun",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Deployable electromagnetic cannons mounted on the hips."
+        },
+        {
+          "id": "type2-super-dragoon",
+          "name": "Super DRAGOON",
+          "mountingLocation": "Wing system",
+          "quantity": 8,
+          "description": "Remote weapon units used for multi-directional beam attacks."
+        },
+        {
+          "id": "type2-beam-shield",
+          "name": "Beam Shield",
+          "mountingLocation": "Forearm",
+          "quantity": 2,
+          "description": "Defensive beam shields generated from the forearms."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "multi-lock-on-system",
+          "name": "Multi Lock-On System",
+          "description": "Allows simultaneous tracking and engagement of multiple targets."
+        },
+        {
+          "id": "super-dragoon-system",
+          "name": "Super DRAGOON System",
+          "description": "Controls remote beam weapon units for all-range attacks."
+        },
+        {
+          "id": "variable-phase-shift-armor",
+          "name": "Variable Phase Shift Armor",
+          "description": "Advanced electrically activated armor."
+        }
+      ],
+      "gallery": []
+    },
+    {
+      "id": "mighty-strike-freedom",
+      "formName": "Mighty Strike Freedom Gundam",
+      "description": "Strike Freedom Gundam Type II combined with the Proud Defender support unit.",
+      "specs": {
+        "generatorType": "Nuclear Reactor with Proud Defender",
+        "armorMaterial": "Variable Phase Shift Armor",
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "futsunomitama",
+          "name": "Futsunomitama",
+          "mountingLocation": "Handheld",
+          "quantity": 1,
+          "description": "A physical anti-ship sword carried by the Mighty Strike Freedom."
+        },
+        {
+          "id": "disruptor",
+          "name": "Disruptor",
+          "mountingLocation": "Forehead",
+          "quantity": 1,
+          "description": "A high-output energy weapon deployed from the forehead."
+        },
+        {
+          "id": "mighty-beam-rifle",
+          "name": "High-Energy Beam Rifle",
+          "mountingLocation": "Handheld",
+          "quantity": 2,
+          "description": "Dual beam rifles retained from the Strike Freedom Type II."
+        },
+        {
+          "id": "mighty-beam-saber",
+          "name": "Beam Saber",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Beam sabers that can be used alongside Futsunomitama."
+        },
+        {
+          "id": "mighty-railgun",
+          "name": "Waist Railgun",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Deployable railguns used during full burst attacks."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "proud-defender",
+          "name": "Proud Defender",
+          "description": "A support craft and equipment package that combines with Strike Freedom Type II."
+        },
+        {
+          "id": "wing-deployment",
+          "name": "Proud Defender Wing Deployment",
+          "description": "Deploys the wing armor for the Mighty Strike Freedom combat configuration."
+        },
+        {
+          "id": "multi-lock-on-system",
+          "name": "Multi Lock-On System",
+          "description": "Supports simultaneous engagement of multiple targets."
+        },
+        {
+          "id": "variable-phase-shift-armor",
+          "name": "Variable Phase Shift Armor",
+          "description": "Advanced electrically activated armor."
+        }
+      ],
+      "gallery": []
+    }
+  ],
+  "status": "published"
+}

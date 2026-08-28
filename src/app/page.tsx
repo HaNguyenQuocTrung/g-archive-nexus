@@ -1,4 +1,3 @@
-import MobileNavigation from "@/components/layout/MobileNavigation";
 import Link from "next/link";
 import { ChevronRight, Database, Radio, Search, Shield } from "lucide-react";
 
@@ -32,42 +31,6 @@ const timelines = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
-      <header className="relative border-b border-slate-800 bg-[#070A0F]/95">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
-          <Link href="/" className="flex items-center gap-3">
-            <div className="border border-cyan-400/50 p-2 text-cyan-400">
-              <Database size={22} />
-            </div>
-
-            <div>
-              <p className="font-mono text-lg font-bold tracking-[0.2em]">
-                G-ARCHIVE NEXUS
-              </p>
-              <p className="font-mono text-[10px] tracking-[0.25em] text-cyan-400">
-                MOBILE SUIT INTELLIGENCE DATABASE
-              </p>
-            </div>
-          </Link>
-
-          <nav className="hidden items-center gap-7 font-mono text-xs uppercase tracking-wider text-slate-400 md:flex">
-            <Link href="/timelines" className="hover:text-cyan-400">
-              Timelines
-            </Link>
-            <Link href="/series" className="hover:text-cyan-400">
-              Series
-            </Link>
-            <Link href="/mobile-suits" className="hover:text-cyan-400">
-              Mobile Suits
-            </Link>
-            <Link href="/characters" className="hover:text-cyan-400">
-              Pilots
-            </Link>
-          </nav>
-
-          <MobileNavigation />
-        </div>
-      </header>
-
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
 

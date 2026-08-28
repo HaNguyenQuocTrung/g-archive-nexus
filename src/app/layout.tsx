@@ -1,3 +1,4 @@
+import Header from "@/components/layout/Header";
 import { validateArchiveRelations } from "@/lib/validation/validateArchiveRelations";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -60,12 +61,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   validateArchiveRelations();
-  
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Header />
         {children}
       </body>
     </html>

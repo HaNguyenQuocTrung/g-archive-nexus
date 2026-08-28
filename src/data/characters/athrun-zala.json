@@ -22,7 +22,9 @@
       "faction": "Terminal",
       "rank": "Special Operative",
       "biography": "Athrun continues working behind the scenes during the C.E. 75 crisis and later joins the battle alongside his former comrades.",
-      "pilotedUnitIds": []
+      "pilotedUnitIds": [
+        "zgmf-x191m2-infinite-justice-type-ii"
+      ]
     }
   ],
   "status": "published"

@@ -1,3 +1,4 @@
+import infiniteJusticeTypeII from "@/data/mobile-suits/zgmf-x191m2-infinite-justice-type-ii.json";
 import strikeFreedomTypeII from "@/data/mobile-suits/zgmf-a-262b-strike-freedom-type-ii.json";
 import risingFreedom from "@/data/mobile-suits/stts-909-rising-freedom.json";
 import aegisGundam from "@/data/mobile-suits/gat-x303-aegis.json";
@@ -19,6 +20,7 @@ const mobileSuits: MobileSuit[] = mobileSuitSchema
     freedomGundam,
     risingFreedom,
     strikeFreedomTypeII,
+    infiniteJusticeTypeII,
   ]);
 
 export function getMobileSuits(): MobileSuit[] {

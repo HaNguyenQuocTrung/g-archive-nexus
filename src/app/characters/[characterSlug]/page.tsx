@@ -1,3 +1,4 @@
+import CombatCareer from "@/components/character/CombatCareer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import {
@@ -189,33 +190,10 @@ export default async function CharacterProfilePage({
                       </p>
                     </div>
 
-                    <div className="mt-8 border-t border-slate-800 pt-7">
-                      <div className="flex items-center gap-3">
-                        <Wrench size={17} className="text-cyan-400" />
-
-                        <h3 className="font-mono text-xs uppercase tracking-[0.2em]">
-                          Combat Career
-                        </h3>
-                      </div>
-
-                      {era.pilotedUnitIds.length > 0 ? (
-                        <div className="mt-5 grid gap-3 sm:grid-cols-2">
-                          {era.pilotedUnitIds.map((unitId) => (
-                            <Link
-                              key={unitId}
-                              href={`/mobile-suits/${unitId}`}
-                              className="border border-slate-700 bg-[#070A0F] px-4 py-4 font-mono text-sm uppercase tracking-wider text-slate-400 transition hover:border-cyan-400/50 hover:text-cyan-400"
-                            >
-                              {unitId.replaceAll("-", " ")}
-                            </Link>
-                          ))}
-                        </div>
-                      ) : (
-                        <p className="mt-5 font-mono text-xs uppercase tracking-wider text-slate-600">
-                          No Mobile Suit records registered
-                        </p>
-                      )}
-                    </div>
+                    <CombatCareer
+  characterId={character.id}
+  characterEraId={era.id}
+/>
                   </section>
                 );
               })}

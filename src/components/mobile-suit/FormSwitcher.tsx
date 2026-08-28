@@ -1,5 +1,5 @@
 "use client";
-
+import ArchiveImage from "@/components/shared/ArchiveImage";
 import { useState } from "react";
 import {
   Crosshair,
@@ -79,22 +79,25 @@ export default function FormSwitcher({
       </section>
 
       <section className="mt-6 grid gap-6 lg:grid-cols-[0.8fr_1.2fr]">
-        <div className="flex min-h-[520px] items-center justify-center border border-cyan-400/20 bg-[#070A0F]">
-          <div className="text-center">
-            <Cpu
-              size={110}
-              strokeWidth={0.7}
-              className="mx-auto text-cyan-400/50"
-            />
-
-            <p className="mt-6 font-mono text-xs uppercase tracking-[0.25em] text-slate-600">
-              Blueprint data pending
-            </p>
-
-            <p className="mt-3 font-mono text-sm uppercase tracking-wider text-cyan-400">
-              {selectedVariant.formName}
-            </p>
-          </div>
+        <div
+          className={[
+            "min-h-[520px]",
+            "border border-cyan-400/20",
+            "bg-[#070A0F]",
+          ].join(" ")}
+        >
+          <ArchiveImage
+            image={
+              selectedVariant.gallery.find(
+                (image) => image.type === "line-art-front",
+              ) ?? selectedVariant.gallery[0]
+            }
+            fallbackLabel={
+              `${selectedVariant.formName} // ` + "Blueprint pending"
+            }
+            priority
+            className="min-h-[520px]"
+          />
         </div>
 
         <div>

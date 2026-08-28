@@ -1,0 +1,49 @@
+import amuroRx78 from "@/data/pilot-logs/amuro-rx78-standard.json";
+import charMs06s from "@/data/pilot-logs/char-ms06s-custom.json";
+import kiraAileStrike from "@/data/pilot-logs/kira-aile-strike.json";
+import kiraFreedom from "@/data/pilot-logs/kira-freedom-standard.json";
+import kiraStrike from "@/data/pilot-logs/kira-strike-standard.json";
+
+import { pilotLogSchema } from "@/lib/validation/schemas";
+import type { PilotLog } from "@/types";
+
+const pilotLogs: PilotLog[] = pilotLogSchema
+  .array()
+  .parse([
+    amuroRx78,
+    charMs06s,
+    kiraStrike,
+    kiraAileStrike,
+    kiraFreedom,
+  ]);
+
+export function getPilotLogs(): PilotLog[] {
+  return pilotLogs;
+}
+
+export function getPilotLogsByCharacterId(
+  characterId: string,
+): PilotLog[] {
+  return pilotLogs.filter(
+    (log) => log.characterId === characterId,
+  );
+}
+
+export function getPilotLogsByMobileSuitId(
+  mobileSuitId: string,
+): PilotLog[] {
+  return pilotLogs.filter(
+    (log) => log.mobileSuitId === mobileSuitId,
+  );
+}
+
+export function getPilotLogsByVariantId(
+  mobileSuitId: string,
+  variantId: string,
+): PilotLog[] {
+  return pilotLogs.filter(
+    (log) =>
+      log.mobileSuitId === mobileSuitId &&
+      log.variantId === variantId,
+  );
+}

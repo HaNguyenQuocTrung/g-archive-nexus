@@ -1,6 +1,13 @@
+const vercelProductionHost =
+  process.env.VERCEL_PROJECT_PRODUCTION_URL;
+
+const fallbackUrl = vercelProductionHost
+  ? `https://${vercelProductionHost}`
+  : "http://localhost:3000";
+
 const configuredSiteUrl =
   process.env.NEXT_PUBLIC_SITE_URL ??
-  "http://localhost:3000";
+  fallbackUrl;
 
 export const siteConfig = {
   name: "G-Archive Nexus",

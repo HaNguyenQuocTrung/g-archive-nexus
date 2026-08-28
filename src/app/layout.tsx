@@ -1,3 +1,4 @@
+import { siteConfig } from "@/config/site";
 import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { validateArchiveRelations } from "@/lib/validation/validateArchiveRelations";
@@ -16,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://g-archive-nexus.vercel.app"),
+  metadataBase: new URL(siteConfig.url),
 
   title: {
     default: "G-Archive Nexus",

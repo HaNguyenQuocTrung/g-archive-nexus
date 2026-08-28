@@ -1,3 +1,4 @@
+import { validatePilotLogs } from "@/lib/validation/validatePilotLogs";
 import { getCharacters } from "@/lib/data/getCharacters";
 import { getMobileSuits } from "@/lib/data/getMobileSuits";
 import { getAllSeries } from "@/lib/data/getSeries";
@@ -139,6 +140,8 @@ export function validateArchiveRelations(): void {
     );
   }
 
+  errors.push(...validatePilotLogs());
+  
   if (errors.length > 0) {
     throw new Error(
       [

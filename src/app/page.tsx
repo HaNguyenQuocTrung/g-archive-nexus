@@ -1,3 +1,5 @@
+import FeaturedPilots from "@/components/home/FeaturedPilots";
+import FeaturedUnits from "@/components/home/FeaturedUnits";
 import { getCharacters } from "@/lib/data/getCharacters";
 import { getMobileSuits } from "@/lib/data/getMobileSuits";
 import { getTimelines } from "@/lib/data/getTimelines";
@@ -11,6 +13,12 @@ export default function Home() {
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <section className="relative overflow-hidden border-b border-slate-800">
+        <div className="border-t border-slate-800">
+          <FeaturedUnits />
+        </div>
+        <div className="border-t border-slate-800">
+          <FeaturedPilots />
+        </div>
         <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
 
         <div className="relative mx-auto grid min-h-[650px] max-w-7xl items-center gap-14 px-6 py-20 lg:grid-cols-[1.15fr_0.85fr]">

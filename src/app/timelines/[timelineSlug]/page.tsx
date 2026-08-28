@@ -2,8 +2,8 @@ import TimelineSeriesRecords from "@/components/timeline/TimelineSeriesRecords";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Radio } from "lucide-react";
-
-import { getTimelineById, getTimelines } from "@/lib/data/getTimelines";
+import { getTimelines } from "@/lib/data/getTimelines";
+import { getTimelineByIdFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 interface TimelineDetailPageProps {
   params: Promise<{
@@ -19,8 +19,7 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: TimelineDetailPageProps) {
   const { timelineSlug } = await params;
-  const timeline = getTimelineById(timelineSlug);
-
+  const timeline = await getTimelineByIdFromDatabase(timelineSlug);
   if (!timeline) {
     return {
       title: "Timeline Not Found",
@@ -37,8 +36,7 @@ export default async function TimelineDetailPage({
   params,
 }: TimelineDetailPageProps) {
   const { timelineSlug } = await params;
-  const timeline = getTimelineById(timelineSlug);
-
+  const timeline = await getTimelineByIdFromDatabase(timelineSlug);
   if (!timeline) {
     notFound();
   }

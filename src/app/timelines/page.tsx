@@ -1,15 +1,15 @@
 import Link from "next/link";
 import { ArrowLeft, ChevronRight, Radio } from "lucide-react";
 
-import { getTimelines } from "@/lib/data/getTimelines";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 export const metadata = {
   title: "Timelines",
   description: "Explore the major timelines of the Gundam multiverse.",
 };
 
-export default function TimelinesPage() {
-  const timelines = getTimelines();
+export default async function TimelinesPage() {
+  const timelines = await getTimelinesFromDatabase();
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">

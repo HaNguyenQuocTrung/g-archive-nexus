@@ -1,11 +1,6 @@
+import MobileNavigation from "@/components/layout/MobileNavigation";
 import Link from "next/link";
-import {
-  ChevronRight,
-  Database,
-  Radio,
-  Search,
-  Shield,
-} from "lucide-react";
+import { ChevronRight, Database, Radio, Search, Shield } from "lucide-react";
 
 const timelines = [
   {
@@ -37,7 +32,7 @@ const timelines = [
 export default function Home() {
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
-      <header className="border-b border-slate-800 bg-[#070A0F]/95">
+      <header className="relative border-b border-slate-800 bg-[#070A0F]/95">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-5">
           <Link href="/" className="flex items-center gap-3">
             <div className="border border-cyan-400/50 p-2 text-cyan-400">
@@ -68,6 +63,8 @@ export default function Home() {
               Pilots
             </Link>
           </nav>
+
+          <MobileNavigation />
         </div>
       </header>
 

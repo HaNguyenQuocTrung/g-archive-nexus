@@ -7,7 +7,6 @@ import {
   Shield,
   UserRound,
   Volume2,
-  Wrench,
 } from "lucide-react";
 
 import {

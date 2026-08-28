@@ -4,7 +4,7 @@ import { getCharacters } from "@/lib/data/getCharacters";
 import { getMobileSuits } from "@/lib/data/getMobileSuits";
 import { getTimelines } from "@/lib/data/getTimelines";
 import Link from "next/link";
-import { ChevronRight, Database, Radio, Search, Shield } from "lucide-react";
+import { ChevronRight, Radio, Search, Shield } from "lucide-react";
 
 export default function Home() {
   const timelines = getTimelines();

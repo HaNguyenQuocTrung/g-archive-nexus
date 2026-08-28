@@ -3,10 +3,8 @@ import ArchiveImage from "@/components/shared/ArchiveImage";
 import { useState } from "react";
 import {
   Crosshair,
-  Cpu,
   Database,
   Shield,
-  Weight,
   UserRound,
 } from "lucide-react";
 

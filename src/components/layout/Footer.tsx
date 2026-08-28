@@ -1,6 +1,5 @@
 import Link from "next/link";
 import { Code2 } from "lucide-react";
-import { Cinzel_Decorative } from "next/font/google";
 
 const footerLinks = [
   {

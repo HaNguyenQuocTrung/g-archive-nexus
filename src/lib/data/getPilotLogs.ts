@@ -1,3 +1,5 @@
+import kiraLauncherStrike from "@/data/pilot-logs/kira-launcher-strike.json";
+import kiraSwordStrike from "@/data/pilot-logs/kira-sword-strike.json";
 import amuroRx78 from "@/data/pilot-logs/amuro-rx78-standard.json";
 import charMs06s from "@/data/pilot-logs/char-ms06s-custom.json";
 import kiraAileStrike from "@/data/pilot-logs/kira-aile-strike.json";
@@ -14,6 +16,8 @@ const pilotLogs: PilotLog[] = pilotLogSchema
     charMs06s,
     kiraStrike,
     kiraAileStrike,
+    kiraSwordStrike,
+    kiraLauncherStrike,
     kiraFreedom,
   ]);
 
@@ -21,20 +25,12 @@ export function getPilotLogs(): PilotLog[] {
   return pilotLogs;
 }
 
-export function getPilotLogsByCharacterId(
-  characterId: string,
-): PilotLog[] {
-  return pilotLogs.filter(
-    (log) => log.characterId === characterId,
-  );
+export function getPilotLogsByCharacterId(characterId: string): PilotLog[] {
+  return pilotLogs.filter((log) => log.characterId === characterId);
 }
 
-export function getPilotLogsByMobileSuitId(
-  mobileSuitId: string,
-): PilotLog[] {
-  return pilotLogs.filter(
-    (log) => log.mobileSuitId === mobileSuitId,
-  );
+export function getPilotLogsByMobileSuitId(mobileSuitId: string): PilotLog[] {
+  return pilotLogs.filter((log) => log.mobileSuitId === mobileSuitId);
 }
 
 export function getPilotLogsByVariantId(
@@ -42,8 +38,6 @@ export function getPilotLogsByVariantId(
   variantId: string,
 ): PilotLog[] {
   return pilotLogs.filter(
-    (log) =>
-      log.mobileSuitId === mobileSuitId &&
-      log.variantId === variantId,
+    (log) => log.mobileSuitId === mobileSuitId && log.variantId === variantId,
   );
 }

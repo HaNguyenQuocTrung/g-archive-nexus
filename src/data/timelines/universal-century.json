@@ -1,0 +1,10 @@
+{
+  "id": "universal-century",
+  "name": "Universal Century",
+  "code": "UC",
+  "description": "The Universal Century is the original Gundam timeline. It chronicles the conflicts between the Earth Federation, the Principality of Zeon and the organizations that emerged after the One Year War.",
+  "status": "published",
+  "seriesIds": [
+    "gundam-0079"
+  ]
+}

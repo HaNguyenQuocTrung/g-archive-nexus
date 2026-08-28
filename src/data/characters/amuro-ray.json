@@ -1,0 +1,21 @@
+{
+  "id": "amuro-ray",
+  "canonicalName": "Amuro Ray",
+  "japaneseName": "アムロ・レイ",
+  "voiceActors": {
+    "japanese": "Tōru Furuya"
+  },
+  "eras": [
+    {
+      "id": "amuro-ray-uc0079",
+      "seriesId": "gundam-0079",
+      "faction": "Earth Federation Forces",
+      "rank": "Civilian Pilot",
+      "biography": "A teenage civilian living on Side 7 who becomes the pilot of the experimental RX-78-2 Gundam during the One Year War.",
+      "pilotedUnitIds": [
+        "rx-78-2"
+      ]
+    }
+  ],
+  "status": "published"
+}

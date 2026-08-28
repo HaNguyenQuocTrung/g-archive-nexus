@@ -1,0 +1,95 @@
+{
+  "id": "zgmf-x10a-freedom",
+  "baseName": "Freedom Gundam",
+  "modelNumber": "ZGMF-X10A",
+  "manufacturer": "ZAFT Integrated Design Bureau",
+  "timelineId": "cosmic-era",
+  "seriesIds": [
+    "gundam-seed"
+  ],
+  "factionIds": [
+    "three-ships-alliance"
+  ],
+  "variants": [
+    {
+      "id": "standard",
+      "formName": "ZGMF-X10A Freedom Gundam",
+      "description": "A nuclear-powered high-performance Mobile Suit designed for overwhelming mobility and multi-target ranged combat.",
+      "specs": {
+        "heightMeters": 18.03,
+        "baseWeightTons": 71.5,
+        "generatorType": "Nuclear Reactor",
+        "armorMaterial": "Phase Shift Armor",
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "freedom-ciws",
+          "name": "MMI-GAU2 Picus 76mm CIWS",
+          "mountingLocation": "Head",
+          "quantity": 2,
+          "description": "Head-mounted close-in defensive automatic cannons."
+        },
+        {
+          "id": "freedom-beam-saber",
+          "name": "MA-M01 Lacerta Beam Saber",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Beam sabers capable of being connected into a double-ended weapon."
+        },
+        {
+          "id": "freedom-beam-rifle",
+          "name": "MA-M20 Lupus Beam Rifle",
+          "mountingLocation": "Handheld",
+          "quantity": 1,
+          "description": "A high-output beam rifle used as the Freedom primary handheld weapon."
+        },
+        {
+          "id": "freedom-railgun",
+          "name": "MMI-M15 Xiphias Railgun",
+          "mountingLocation": "Waist",
+          "quantity": 2,
+          "description": "Foldable electromagnetic cannons mounted on the hips."
+        },
+        {
+          "id": "freedom-balaena",
+          "name": "M100 Balaena Plasma Beam Cannon",
+          "mountingLocation": "Wings",
+          "quantity": 2,
+          "description": "High-output plasma beam cannons stored within the wing binders."
+        },
+        {
+          "id": "freedom-shield",
+          "name": "Laminated Anti-Beam Shield",
+          "mountingLocation": "Arm",
+          "quantity": 1,
+          "description": "A defensive shield designed to resist beam attacks."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "n-jammer-canceller",
+          "name": "Neutron Jammer Canceller",
+          "description": "Allows the Freedom to operate its nuclear reactor in environments affected by Neutron Jammers."
+        },
+        {
+          "id": "multi-lock-on-system",
+          "name": "Multi Lock-On System",
+          "description": "Allows the pilot to track and engage multiple targets simultaneously."
+        },
+        {
+          "id": "high-mat-mode",
+          "name": "High Mobility Aerial Tactics Mode",
+          "description": "Deploys the wing binders to maximize aerial mobility and weapon access."
+        },
+        {
+          "id": "phase-shift-armor",
+          "name": "Phase Shift Armor",
+          "description": "Electrically activated armor resistant to conventional physical attacks."
+        }
+      ],
+      "gallery": []
+    }
+  ],
+  "status": "published"
+}

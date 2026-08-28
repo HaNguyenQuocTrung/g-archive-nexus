@@ -1,0 +1,81 @@
+{
+  "id": "rx-78-2",
+  "baseName": "RX-78-2 Gundam",
+  "modelNumber": "RX-78-2",
+  "manufacturer": "Earth Federation Forces",
+  "timelineId": "universal-century",
+  "seriesIds": [
+    "gundam-0079"
+  ],
+  "factionIds": [
+    "earth-federation-forces"
+  ],
+  "variants": [
+    {
+      "id": "standard",
+      "formName": "RX-78-2 Gundam",
+      "description": "The Earth Federation prototype close-combat Mobile Suit developed as part of Operation V.",
+      "specs": {
+        "heightMeters": 18,
+        "baseWeightTons": 43.4,
+        "grossWeightTons": 60,
+        "generatorType": "Minovsky Ultracompact Fusion Reactor",
+        "generatorOutputKw": 1380,
+        "armorMaterial": "Luna Titanium Alloy",
+        "sensorRangeMeters": 5700,
+        "crew": 1
+      },
+      "armaments": [
+        {
+          "id": "rx78-vulcan-gun",
+          "name": "60mm Vulcan Gun",
+          "mountingLocation": "Head",
+          "quantity": 2,
+          "description": "Close-range automatic weapons mounted in the head."
+        },
+        {
+          "id": "rx78-beam-saber",
+          "name": "Beam Saber",
+          "mountingLocation": "Backpack",
+          "quantity": 2,
+          "description": "Close-combat beam weapons stored on the backpack."
+        },
+        {
+          "id": "rx78-beam-rifle",
+          "name": "Beam Rifle",
+          "mountingLocation": "Handheld",
+          "quantity": 1,
+          "description": "A compact beam weapon with firepower comparable to a battleship cannon."
+        },
+        {
+          "id": "rx78-hyper-bazooka",
+          "name": "Hyper Bazooka",
+          "mountingLocation": "Handheld",
+          "quantity": 1,
+          "description": "A heavy projectile launcher used against armored targets."
+        },
+        {
+          "id": "rx78-shield",
+          "name": "Gundam Shield",
+          "mountingLocation": "Arm",
+          "quantity": 1,
+          "description": "A defensive shield constructed from durable composite materials."
+        }
+      ],
+      "specialSystems": [
+        {
+          "id": "core-block-system",
+          "name": "Core Block System",
+          "description": "A modular cockpit and escape system centered around the Core Fighter."
+        },
+        {
+          "id": "learning-computer",
+          "name": "Learning Computer",
+          "description": "An onboard system that gathers and improves combat data during operation."
+        }
+      ],
+      "gallery": []
+    }
+  ],
+  "status": "published"
+}

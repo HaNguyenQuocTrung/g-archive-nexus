@@ -1,13 +1,8 @@
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ChevronRight,
-  Cpu,
-  Radio,
-} from "lucide-react";
+import { ArrowLeft, ChevronRight, Cpu, Radio } from "lucide-react";
 
 import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getTimelineById } from "@/lib/data/getTimelines";
+import { getTimelineById, getTimelines } from "@/lib/data/getTimelines";
 
 export const metadata = {
   title: "Mobile Suit Database",
@@ -15,8 +10,29 @@ export const metadata = {
     "Browse Mobile Suit specifications, armaments, systems and variants.",
 };
 
-export default function MobileSuitsPage() {
+interface MobileSuitsPageProps {
+  searchParams: Promise<{
+    timeline?: string | string[];
+  }>;
+}
+
+export default async function MobileSuitsPage({
+  searchParams,
+}: MobileSuitsPageProps) {
+  const params = await searchParams;
+
+  const activeTimeline =
+    typeof params.timeline === "string" ? params.timeline : "all";
+
   const mobileSuits = getMobileSuits();
+  const timelines = getTimelines();
+
+  const filteredMobileSuits =
+    activeTimeline === "all"
+      ? mobileSuits
+      : mobileSuits.filter(
+          (mobileSuit) => mobileSuit.timelineId === activeTimeline,
+        );
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
@@ -54,11 +70,43 @@ export default function MobileSuitsPage() {
             configuration records.
           </p>
 
+          <div
+            className={[
+              "mt-12 border border-slate-800",
+              "bg-[#0F172A] p-5",
+            ].join(" ")}
+          >
+            <div className={["flex flex-wrap items-center", "gap-3"].join(" ")}>
+              <p
+                className={[
+                  "mr-3 font-mono text-[10px]",
+                  "uppercase tracking-[0.25em]",
+                  "text-slate-500",
+                ].join(" ")}
+              >
+                Filter Timeline
+              </p>
+
+              <TimelineFilter
+                label="All Units"
+                href="/mobile-suits"
+                active={activeTimeline === "all"}
+              />
+
+              {timelines.map((timeline) => (
+                <TimelineFilter
+                  key={timeline.id}
+                  label={`${timeline.code} // ${timeline.name}`}
+                  href={"/mobile-suits?timeline=" + timeline.id}
+                  active={activeTimeline === timeline.id}
+                />
+              ))}
+            </div>
+          </div>
+
           <div className="mt-14 grid gap-6 md:grid-cols-2">
-            {mobileSuits.map((mobileSuit, index) => {
-              const timeline = getTimelineById(
-                mobileSuit.timelineId,
-              );
+            {filteredMobileSuits.map((mobileSuit, index) => {
+              const timeline = getTimelineById(mobileSuit.timelineId);
 
               const primaryVariant = mobileSuit.variants[0];
 
@@ -148,10 +196,46 @@ interface DatabaseValueProps {
   value: number;
 }
 
-function DatabaseValue({
+interface TimelineFilterProps {
+  label: string;
+  href: string;
+  active: boolean;
+}
+
+function TimelineFilter({
   label,
-  value,
-}: DatabaseValueProps) {
+  href,
+  active,
+}: TimelineFilterProps) {
+  return (
+    <Link
+      href={href}
+      className={[
+        "border px-4 py-2",
+        "font-mono text-[10px]",
+        "uppercase tracking-wider",
+        "transition",
+        active
+          ? [
+              "border-cyan-400",
+              "bg-cyan-400",
+              "text-slate-950",
+            ].join(" ")
+          : [
+              "border-slate-700",
+              "bg-[#070A0F]",
+              "text-slate-500",
+              "hover:border-cyan-400/50",
+              "hover:text-cyan-400",
+            ].join(" "),
+      ].join(" ")}
+    >
+      {label}
+    </Link>
+  );
+}
+
+function DatabaseValue({ label, value }: DatabaseValueProps) {
   return (
     <div>
       <p className="font-mono text-xl text-slate-200">

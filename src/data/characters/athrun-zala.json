@@ -15,6 +15,14 @@
       "pilotedUnitIds": [
         "gat-x303-aegis"
       ]
+    },
+    {
+      "id": "athrun-zala-ce75",
+      "seriesId": "gundam-seed-freedom",
+      "faction": "Terminal",
+      "rank": "Special Operative",
+      "biography": "Athrun continues working behind the scenes during the C.E. 75 crisis and later joins the battle alongside his former comrades.",
+      "pilotedUnitIds": []
     }
   ],
   "status": "published"

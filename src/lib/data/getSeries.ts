@@ -1,3 +1,4 @@
+import gundamSeedFreedom from "@/data/series/gundam-seed-freedom.json";
 import gundam0079 from "@/data/series/gundam-0079.json";
 import gundamSeed from "@/data/series/gundam-seed.json";
 
@@ -9,6 +10,7 @@ const seriesRecords: Series[] = seriesSchema
   .parse([
     gundam0079,
     gundamSeed,
+    gundamSeedFreedom,
   ]);
 
 export function getAllSeries(): Series[] {

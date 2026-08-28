@@ -16,6 +16,14 @@
         "gat-x105-strike",
         "zgmf-x10a-freedom"
       ]
+    },
+    {
+      "id": "kira-yamato-ce75",
+      "seriesId": "gundam-seed-freedom",
+      "faction": "COMPASS",
+      "rank": "Mobile Suit Commander",
+      "biography": "In C.E. 75, Kira serves as a member of COMPASS and intervenes in regional conflicts to protect the fragile peace.",
+      "pilotedUnitIds": []
     }
   ],
   "status": "published"

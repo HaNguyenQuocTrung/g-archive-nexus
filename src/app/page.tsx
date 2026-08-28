@@ -174,12 +174,6 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-slate-800">
-        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-6 py-8 font-mono text-xs uppercase tracking-wider text-slate-600 sm:flex-row sm:justify-between">
-          <p>G-Archive Nexus // Fan-made archive</p>
-          <p>Not affiliated with Bandai Namco or Sunrise</p>
-        </div>
-      </footer>
     </main>
   );
 }

@@ -1,3 +1,4 @@
+import Footer from "@/components/layout/Footer";
 import Header from "@/components/layout/Header";
 import { validateArchiveRelations } from "@/lib/validation/validateArchiveRelations";
 import type { Metadata } from "next";
@@ -69,6 +70,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

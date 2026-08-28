@@ -1,18 +1,11 @@
+import SeriesArchiveTabs from "@/components/series/SeriesArchiveTabs";
+import { getCharacterById } from "@/lib/data/getCharacters";
+import { getMobileSuitById } from "@/lib/data/getMobileSuits";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  CalendarDays,
-  Clapperboard,
-  Radio,
-  UserRound,
-  Wrench,
-} from "lucide-react";
+import { ArrowLeft, CalendarDays, Clapperboard, Radio } from "lucide-react";
 
-import {
-  getAllSeries,
-  getSeriesById,
-} from "@/lib/data/getSeries";
+import { getAllSeries, getSeriesById } from "@/lib/data/getSeries";
 import { getTimelineById } from "@/lib/data/getTimelines";
 
 interface SeriesDetailPageProps {
@@ -27,9 +20,7 @@ export function generateStaticParams() {
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: SeriesDetailPageProps) {
+export async function generateMetadata({ params }: SeriesDetailPageProps) {
   const { seriesSlug } = await params;
   const series = getSeriesById(seriesSlug);
 
@@ -56,6 +47,41 @@ export default async function SeriesDetailPage({
   }
 
   const timeline = getTimelineById(series.timelineId);
+  const castRecords = series.characterIds.flatMap((characterId) => {
+    const character = getCharacterById(characterId);
+
+    if (!character) {
+      return [];
+    }
+
+    const era = character.eras.find((item) => item.seriesId === series.id);
+
+    return [
+      {
+        id: character.id,
+        title: character.canonicalName,
+        subtitle: era?.faction ?? "Faction unknown",
+        href: `/characters/${character.id}`,
+      },
+    ];
+  });
+
+  const mobileSuitRecords = series.mobileSuitIds.flatMap((mobileSuitId) => {
+    const mobileSuit = getMobileSuitById(mobileSuitId);
+
+    if (!mobileSuit) {
+      return [];
+    }
+
+    return [
+      {
+        id: mobileSuit.id,
+        title: mobileSuit.baseName,
+        subtitle: mobileSuit.modelNumber,
+        href: `/mobile-suits/${mobileSuit.id}`,
+      },
+    ];
+  });
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
@@ -118,9 +144,7 @@ export default async function SeriesDetailPage({
             </h1>
 
             {series.titles.ja && (
-              <p className="mt-4 text-xl text-slate-500">
-                {series.titles.ja}
-              </p>
+              <p className="mt-4 text-xl text-slate-500">{series.titles.ja}</p>
             )}
 
             <p className="mt-8 max-w-4xl text-lg leading-8 text-slate-300">
@@ -128,10 +152,7 @@ export default async function SeriesDetailPage({
             </p>
 
             <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-              <InfoPanel
-                label="Timeline"
-                value={timeline?.name ?? "Unknown"}
-              />
+              <InfoPanel label="Timeline" value={timeline?.name ?? "Unknown"} />
 
               <InfoPanel
                 label="Release"
@@ -162,23 +183,12 @@ export default async function SeriesDetailPage({
           Cast and Mobile Suits
         </h2>
 
-        <div className="mt-10 grid gap-6 md:grid-cols-2">
-          <ArchiveGroup
-            title="Character roster"
-            count={series.characterIds.length}
-            icon={<UserRound className="text-cyan-400" />}
-            records={series.characterIds}
-            basePath="/characters"
-          />
-
-          <ArchiveGroup
-            title="Mobile Suit roster"
-            count={series.mobileSuitIds.length}
-            icon={<Wrench className="text-amber-400" />}
-            records={series.mobileSuitIds}
-            basePath="/mobile-suits"
-          />
-        </div>
+        <div className="mt-10">
+  <SeriesArchiveTabs
+    cast={castRecords}
+    mobileSuits={mobileSuitRecords}
+  />
+</div>
       </section>
     </main>
   );
@@ -203,46 +213,3 @@ function InfoPanel({ label, value, icon }: InfoPanelProps) {
   );
 }
 
-interface ArchiveGroupProps {
-  title: string;
-  count: number;
-  icon: React.ReactNode;
-  records: string[];
-  basePath: string;
-}
-
-function ArchiveGroup({
-  title,
-  count,
-  icon,
-  records,
-  basePath,
-}: ArchiveGroupProps) {
-  return (
-    <section className="border border-slate-800 bg-[#0F172A] p-7">
-      <div className="flex items-center justify-between border-b border-slate-800 pb-5">
-        <div className="flex items-center gap-3">
-          {icon}
-
-          <h3 className="font-bold uppercase">{title}</h3>
-        </div>
-
-        <span className="font-mono text-xs text-slate-500">
-          {String(count).padStart(2, "0")} records
-        </span>
-      </div>
-
-      <div className="mt-5 space-y-3">
-        {records.map((record) => (
-          <Link
-            key={record}
-            href={`${basePath}/${record}`}
-            className="block border border-slate-800 bg-[#070A0F] px-4 py-4 font-mono text-sm uppercase tracking-wider text-slate-400 transition hover:border-cyan-400/50 hover:text-cyan-400"
-          >
-            {record.replaceAll("-", " ")}
-          </Link>
-        ))}
-      </div>
-    </section>
-  );
-}

@@ -1,34 +1,13 @@
+import { getCharacters } from "@/lib/data/getCharacters";
+import { getMobileSuits } from "@/lib/data/getMobileSuits";
+import { getTimelines } from "@/lib/data/getTimelines";
 import Link from "next/link";
 import { ChevronRight, Database, Radio, Search, Shield } from "lucide-react";
 
-const timelines = [
-  {
-    code: "UC",
-    name: "Universal Century",
-    status: "Archive Online",
-    href: "/timelines/universal-century",
-  },
-  {
-    code: "CE",
-    name: "Cosmic Era",
-    status: "Archive Online",
-    href: "/timelines/cosmic-era",
-  },
-  {
-    code: "AD",
-    name: "Anno Domini",
-    status: "Data Pending",
-    href: "/timelines",
-  },
-  {
-    code: "AS",
-    name: "Ad Stella",
-    status: "Data Pending",
-    href: "/timelines",
-  },
-];
-
 export default function Home() {
+  const timelines = getTimelines();
+  const mobileSuits = getMobileSuits();
+  const characters = getCharacters();
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <section className="relative overflow-hidden border-b border-slate-800">
@@ -106,19 +85,27 @@ export default function Home() {
 
               <div className="mt-8 grid grid-cols-3 gap-3 border-t border-slate-800 pt-6 text-center">
                 <div>
-                  <p className="font-mono text-xl text-white">02</p>
+                  <p className="font-mono text-xl text-white">
+                    {String(timelines.length).padStart(2, "0")}
+                  </p>
                   <p className="mt-1 text-[10px] uppercase tracking-wider text-slate-500">
                     Timelines
                   </p>
                 </div>
+
                 <div>
-                  <p className="font-mono text-xl text-white">04</p>
+                  <p className="font-mono text-xl text-white">
+                    {String(mobileSuits.length).padStart(2, "0")}
+                  </p>
                   <p className="mt-1 text-[10px] uppercase tracking-wider text-slate-500">
                     Units
                   </p>
                 </div>
+
                 <div>
-                  <p className="font-mono text-xl text-white">04</p>
+                  <p className="font-mono text-xl text-white">
+                    {String(characters.length).padStart(2, "0")}
+                  </p>
                   <p className="mt-1 text-[10px] uppercase tracking-wider text-slate-500">
                     Pilots
                   </p>
@@ -152,7 +139,7 @@ export default function Home() {
           {timelines.map((timeline) => (
             <Link
               key={timeline.code}
-              href={timeline.href}
+              href={`/timelines/${timeline.id}`}
               className="group border border-slate-800 bg-[#0F172A] p-6 transition hover:border-cyan-400/60"
             >
               <div className="flex items-start justify-between">
@@ -167,13 +154,12 @@ export default function Home() {
               </h3>
 
               <p className="mt-2 font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                {timeline.status}
+                Archive {timeline.status}
               </p>
             </Link>
           ))}
         </div>
       </section>
-
     </main>
   );
 }

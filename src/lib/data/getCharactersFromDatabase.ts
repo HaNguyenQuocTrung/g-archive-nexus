@@ -1,7 +1,6 @@
 import "server-only";
 
-import { getCharacterById, getCharacters } from "@/lib/data/getCharacters";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Character, CharacterEra } from "@/types";
 
 interface SlugRelation {
@@ -51,15 +50,8 @@ function getPilotedUnitIds(assignments: PilotAssignmentRow[] | null): string[] {
 }
 
 export async function getCharactersFromDatabase(): Promise<Character[]> {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ) {
-    return getCharacters();
-  }
-
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const { data, error } = await supabase
       .from("characters")
@@ -90,8 +82,12 @@ export async function getCharactersFromDatabase(): Promise<Character[]> {
       )
       .order("name");
 
-    if (error || !data?.length) {
-      return getCharacters();
+    if (error) {
+      throw new Error(`Unable to load characters: ${error.message}`);
+    }
+
+    if (!data) {
+      return [];
     }
 
     return (data as unknown as CharacterRow[]).map((record) => {
@@ -115,8 +111,12 @@ export async function getCharactersFromDatabase(): Promise<Character[]> {
         status: record.status === "published" ? "published" : "draft",
       };
     });
-  } catch {
-    return getCharacters();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("Unable to load characters.");
   }
 }
 
@@ -125,9 +125,7 @@ export async function getCharacterByIdFromDatabase(
 ): Promise<Character | undefined> {
   const characters = await getCharactersFromDatabase();
 
-  return (
-    characters.find((character) => character.id === id) ?? getCharacterById(id)
-  );
+  return characters.find((character) => character.id === id);
 }
 
 export async function getCharactersBySeriesIdFromDatabase(

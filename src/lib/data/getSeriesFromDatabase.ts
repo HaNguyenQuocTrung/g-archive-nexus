@@ -1,7 +1,6 @@
 import "server-only";
 
-import { getAllSeries, getSeriesById } from "@/lib/data/getSeries";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Series } from "@/types";
 
 interface SeriesRow {
@@ -59,15 +58,8 @@ function getRelatedSlug(
 }
 
 export async function getAllSeriesFromDatabase(): Promise<Series[]> {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ) {
-    return getAllSeries();
-  }
-
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const { data, error } = await supabase
       .from("series")
@@ -99,8 +91,12 @@ export async function getAllSeriesFromDatabase(): Promise<Series[]> {
       )
       .order("release_year");
 
-    if (error || !data?.length) {
-      return getAllSeries();
+    if (error) {
+      throw new Error(`Unable to load series: ${error.message}`);
+    }
+
+    if (!data) {
+      return [];
     }
 
     return (data as SeriesRow[]).map((record) => ({
@@ -124,8 +120,12 @@ export async function getAllSeriesFromDatabase(): Promise<Series[]> {
         .filter((slug): slug is string => Boolean(slug)),
       status: record.status === "published" ? "published" : "draft",
     }));
-  } catch {
-    return getAllSeries();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("Unable to load series.");
   }
 }
 
@@ -134,7 +134,7 @@ export async function getSeriesByIdFromDatabase(
 ): Promise<Series | undefined> {
   const records = await getAllSeriesFromDatabase();
 
-  return records.find((series) => series.id === id) ?? getSeriesById(id);
+  return records.find((series) => series.id === id);
 }
 
 export async function getSeriesByTimelineIdFromDatabase(

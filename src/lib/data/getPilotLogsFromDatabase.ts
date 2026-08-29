@@ -1,11 +1,6 @@
 import "server-only";
 
-import {
-  getPilotLogs,
-  getPilotLogsByCharacterId,
-  getPilotLogsByMobileSuitId,
-} from "@/lib/data/getPilotLogs";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { PilotLog } from "@/types";
 
 interface SlugRelation {
@@ -44,15 +39,8 @@ function firstRelation<T>(relation: T | T[] | null): T | undefined {
 }
 
 export async function getPilotLogsFromDatabase(): Promise<PilotLog[]> {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ) {
-    return getPilotLogs();
-  }
-
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const { data, error } = await supabase
       .from("pilot_assignments")
@@ -80,8 +68,12 @@ export async function getPilotLogsFromDatabase(): Promise<PilotLog[]> {
       )
       .order("created_at");
 
-    if (error || !data?.length) {
-      return getPilotLogs();
+    if (error) {
+      throw new Error(`Unable to load pilot logs: ${error.message}`);
+    }
+
+    if (!data) {
+      return [];
     }
 
     return (data as unknown as PilotAssignmentRow[]).flatMap((record) => {
@@ -119,8 +111,12 @@ export async function getPilotLogsFromDatabase(): Promise<PilotLog[]> {
         },
       ];
     });
-  } catch {
-    return getPilotLogs();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("Unable to load pilot logs.");
   }
 }
 
@@ -133,7 +129,7 @@ export async function getPilotLogsByCharacterIdFromDatabase(
     (record) => record.characterId === characterId,
   );
 
-  return matches.length > 0 ? matches : getPilotLogsByCharacterId(characterId);
+  return matches;
 }
 
 export async function getPilotLogsByMobileSuitIdFromDatabase(
@@ -145,9 +141,7 @@ export async function getPilotLogsByMobileSuitIdFromDatabase(
     (record) => record.mobileSuitId === mobileSuitId,
   );
 
-  return matches.length > 0
-    ? matches
-    : getPilotLogsByMobileSuitId(mobileSuitId);
+  return matches;
 }
 
 export async function getPilotLogsByVariantIdFromDatabase(

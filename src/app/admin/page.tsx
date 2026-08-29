@@ -25,9 +25,7 @@ export default async function AdminPage() {
         Administration sector
       </p>
 
-      <h1 className="mt-4 text-4xl font-bold uppercase">
-        Archive Control
-      </h1>
+      <h1 className="mt-4 text-4xl font-bold uppercase">Archive Control</h1>
 
       <p className="mt-3 text-slate-400">
         Manage canonical records, community content and interactive systems.

@@ -1,10 +1,6 @@
 import "server-only";
 
-import { createClient } from "@/lib/supabase/server";
-import {
-  getTimelineById,
-  getTimelines,
-} from "@/lib/data/getTimelines";
+import { createPublicClient } from "@/lib/supabase/public";
 import type { Timeline } from "@/types";
 
 interface TimelineRow {
@@ -12,52 +8,54 @@ interface TimelineRow {
   name: string;
   code: string;
   description: string;
-  status: Timeline["status"];
+  status: string;
   series: Array<{
     slug: string;
   }> | null;
 }
 
-export async function getTimelinesFromDatabase(): Promise<Timeline[]> {
+function assertSupabaseConfiguration() {
   if (
     !process.env.NEXT_PUBLIC_SUPABASE_URL ||
     !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
   ) {
-    return getTimelines();
+    throw new Error("Supabase public environment variables are missing.");
+  }
+}
+
+export async function getTimelinesFromDatabase(): Promise<Timeline[]> {
+  assertSupabaseConfiguration();
+
+  const supabase = createPublicClient();
+
+  const { data, error } = await supabase
+    .from("timelines")
+    .select(
+      `
+      slug,
+      name,
+      code,
+      description,
+      status,
+      series (
+        slug
+      )
+    `,
+    )
+    .order("code");
+
+  if (error) {
+    throw new Error(`Unable to load timelines: ${error.message}`);
   }
 
-  try {
-    const supabase = await createClient();
-
-    const { data, error } = await supabase
-      .from("timelines")
-      .select(`
-        slug,
-        name,
-        code,
-        description,
-        status,
-        series (
-          slug
-        )
-      `)
-      .order("code");
-
-    if (error || !data?.length) {
-      return getTimelines();
-    }
-
-    return (data as TimelineRow[]).map((timeline) => ({
-      id: timeline.slug,
-      name: timeline.name,
-      code: timeline.code,
-      description: timeline.description,
-      status: timeline.status,
-      seriesIds: (timeline.series ?? []).map((series) => series.slug),
-    }));
-  } catch {
-    return getTimelines();
-  }
+  return (data as unknown as TimelineRow[]).map((timeline) => ({
+    id: timeline.slug,
+    name: timeline.name,
+    code: timeline.code,
+    description: timeline.description,
+    status: timeline.status === "published" ? "published" : "draft",
+    seriesIds: (timeline.series ?? []).map((series) => series.slug),
+  }));
 }
 
 export async function getTimelineByIdFromDatabase(
@@ -65,8 +63,5 @@ export async function getTimelineByIdFromDatabase(
 ): Promise<Timeline | undefined> {
   const timelines = await getTimelinesFromDatabase();
 
-  return (
-    timelines.find((timeline) => timeline.id === id) ??
-    getTimelineById(id)
-  );
+  return timelines.find((timeline) => timeline.id === id);
 }

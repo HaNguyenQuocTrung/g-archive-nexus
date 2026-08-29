@@ -1,7 +1,6 @@
 import "server-only";
 
-import { getMobileSuitById, getMobileSuits } from "@/lib/data/getMobileSuits";
-import { createClient } from "@/lib/supabase/server";
+import { createPublicClient } from "@/lib/supabase/public";
 import type {
   Armament,
   MobileSuit,
@@ -116,15 +115,8 @@ function mapVariant(variant: VariantRow): MobileSuitVariant {
 }
 
 export async function getMobileSuitsFromDatabase(): Promise<MobileSuit[]> {
-  if (
-    !process.env.NEXT_PUBLIC_SUPABASE_URL ||
-    !process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
-  ) {
-    return getMobileSuits();
-  }
-
   try {
-    const supabase = await createClient();
+    const supabase = createPublicClient();
 
     const { data, error } = await supabase
       .from("mobile_suits")
@@ -176,8 +168,12 @@ export async function getMobileSuitsFromDatabase(): Promise<MobileSuit[]> {
       )
       .order("model_number");
 
-    if (error || !data?.length) {
-      return getMobileSuits();
+    if (error) {
+      throw new Error(`Unable to load Mobile Suits: ${error.message}`);
+    }
+
+    if (!data) {
+      return [];
     }
 
     return (data as unknown as MobileSuitRow[]).map((record) => {
@@ -207,8 +203,12 @@ export async function getMobileSuitsFromDatabase(): Promise<MobileSuit[]> {
         status: record.status === "published" ? "published" : "draft",
       };
     });
-  } catch {
-    return getMobileSuits();
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+
+    throw new Error("Unable to load Mobile Suits.");
   }
 }
 
@@ -217,7 +217,7 @@ export async function getMobileSuitByIdFromDatabase(
 ): Promise<MobileSuit | undefined> {
   const records = await getMobileSuitsFromDatabase();
 
-  return records.find((record) => record.id === id) ?? getMobileSuitById(id);
+  return records.find((record) => record.id === id);
 }
 
 export async function getMobileSuitsBySeriesIdFromDatabase(

@@ -1,19 +1,26 @@
 import Link from "next/link";
 import { ChevronRight, Cpu } from "lucide-react";
+import type { MobileSuit, Timeline } from "@/types";
 
-import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getTimelineById } from "@/lib/data/getTimelines";
+interface FeaturedUnitsProps {
+  units: MobileSuit[];
+  timelines: Timeline[];
+}
 
-export default function FeaturedUnits() {
-  const featuredUnits = getMobileSuits().slice(0, 4);
+export default function FeaturedUnits({
+  units,
+  timelines,
+}: FeaturedUnitsProps) {
+  const featuredUnits = units.slice(0, 4);
+
+  const timelineMap = new Map(
+    timelines.map((timeline) => [timeline.id, timeline]),
+  );
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-20">
       <div
-        className={[
-          "mb-10 flex items-end",
-          "justify-between gap-6",
-        ].join(" ")}
+        className={["mb-10 flex items-end", "justify-between gap-6"].join(" ")}
       >
         <div>
           <p
@@ -44,9 +51,7 @@ export default function FeaturedUnits() {
 
       <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
         {featuredUnits.map((unit, index) => {
-          const timeline = getTimelineById(
-            unit.timelineId,
-          );
+          const timeline = timelineMap.get(unit.timelineId);
 
           return (
             <Link

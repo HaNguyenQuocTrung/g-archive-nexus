@@ -7,16 +7,23 @@ import {
   Radio,
 } from "lucide-react";
 
-import { getAllSeries } from "@/lib/data/getSeries";
-import { getTimelineById } from "@/lib/data/getTimelines";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 export const metadata = {
   title: "Series Archive",
   description: "Browse Gundam television series, movies, OVAs and manga.",
 };
 
-export default function SeriesPage() {
-  const seriesRecords = getAllSeries();
+export default async function SeriesPage() {
+  const [seriesRecords, timelines] = await Promise.all([
+    getAllSeriesFromDatabase(),
+    getTimelinesFromDatabase(),
+  ]);
+
+  const timelineMap = new Map(
+    timelines.map((timeline) => [timeline.id, timeline]),
+  );
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
@@ -56,7 +63,7 @@ export default function SeriesPage() {
 
           <div className="mt-14 space-y-6">
             {seriesRecords.map((series, index) => {
-              const timeline = getTimelineById(series.timelineId);
+              const timeline = timelineMap.get(series.timelineId);
 
               return (
                 <Link

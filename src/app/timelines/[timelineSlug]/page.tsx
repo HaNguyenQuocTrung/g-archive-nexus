@@ -2,8 +2,10 @@ import TimelineSeriesRecords from "@/components/timeline/TimelineSeriesRecords";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Radio } from "lucide-react";
-import { getTimelines } from "@/lib/data/getTimelines";
-import { getTimelineByIdFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
+import {
+  getTimelineByIdFromDatabase,
+  getTimelinesFromDatabase,
+} from "@/lib/data/getTimelinesFromDatabase";
 
 interface TimelineDetailPageProps {
   params: Promise<{
@@ -11,8 +13,10 @@ interface TimelineDetailPageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return getTimelines().map((timeline) => ({
+export async function generateStaticParams() {
+  const timelines = await getTimelinesFromDatabase();
+
+  return timelines.map((timeline) => ({
     timelineSlug: timeline.id,
   }));
 }

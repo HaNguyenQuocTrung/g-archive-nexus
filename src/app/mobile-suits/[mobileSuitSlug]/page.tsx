@@ -3,11 +3,14 @@ import { notFound } from "next/navigation";
 import { ArrowLeft, Building2, Radio, UserRound } from "lucide-react";
 
 import FormSwitcher from "@/components/mobile-suit/FormSwitcher";
-import { getCharacterById, getCharacters } from "@/lib/data/getCharacters";
-import { getPilotLogsByMobileSuitId } from "@/lib/data/getPilotLogs";
-import { getMobileSuitById, getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getSeriesById } from "@/lib/data/getSeries";
-import { getTimelineById } from "@/lib/data/getTimelines";
+import {
+  getMobileSuitByIdFromDatabase,
+  getMobileSuitsFromDatabase,
+} from "@/lib/data/getMobileSuitsFromDatabase";
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
+import { getTimelineByIdFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
+import { getPilotLogsByMobileSuitIdFromDatabase } from "@/lib/data/getPilotLogsFromDatabase";
 
 interface MobileSuitDetailPageProps {
   params: Promise<{
@@ -15,15 +18,17 @@ interface MobileSuitDetailPageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return getMobileSuits().map((mobileSuit) => ({
+export async function generateStaticParams() {
+  const mobileSuits = await getMobileSuitsFromDatabase();
+
+  return mobileSuits.map((mobileSuit) => ({
     mobileSuitSlug: mobileSuit.id,
   }));
 }
 
 export async function generateMetadata({ params }: MobileSuitDetailPageProps) {
   const { mobileSuitSlug } = await params;
-  const mobileSuit = getMobileSuitById(mobileSuitSlug);
+  const mobileSuit = await getMobileSuitByIdFromDatabase(mobileSuitSlug);
 
   if (!mobileSuit) {
     return {
@@ -41,26 +46,34 @@ export default async function MobileSuitDetailPage({
   params,
 }: MobileSuitDetailPageProps) {
   const { mobileSuitSlug } = await params;
-  const mobileSuit = getMobileSuitById(mobileSuitSlug);
-
+  const mobileSuit = await getMobileSuitByIdFromDatabase(mobileSuitSlug);
   if (!mobileSuit) {
     notFound();
   }
 
-  const timeline = getTimelineById(mobileSuit.timelineId);
+  const [timeline, seriesRecords, characters, pilotLogs] = await Promise.all([
+    getTimelineByIdFromDatabase(mobileSuit.timelineId),
+    getAllSeriesFromDatabase(),
+    getCharactersFromDatabase(),
+    getPilotLogsByMobileSuitIdFromDatabase(mobileSuit.id),
+  ]);
+
+  const seriesMap = new Map(seriesRecords.map((series) => [series.id, series]));
+
+  const characterMap = new Map(
+    characters.map((character) => [character.id, character]),
+  );
 
   const relatedSeries = mobileSuit.seriesIds
-    .map((seriesId) => getSeriesById(seriesId))
+    .map((seriesId) => seriesMap.get(seriesId))
     .filter((series) => series !== undefined);
 
-  const assignedPilots = getCharacters().filter((character) =>
+  const assignedPilots = characters.filter((character) =>
     character.eras.some((era) => era.pilotedUnitIds.includes(mobileSuit.id)),
   );
 
-  const variantPilotAssignments = getPilotLogsByMobileSuitId(
-    mobileSuit.id,
-  ).flatMap((log) => {
-    const character = getCharacterById(log.characterId);
+  const variantPilotAssignments = pilotLogs.flatMap((log) => {
+    const character = characterMap.get(log.characterId);
 
     if (!character) {
       return [];

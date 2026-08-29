@@ -1,7 +1,9 @@
-import { getCharacters } from "@/lib/data/getCharacters";
-import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getAllSeries } from "@/lib/data/getSeries";
-import { getTimelines } from "@/lib/data/getTimelines";
+import "server-only";
+
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 export type SearchRecordType =
   | "timeline"
@@ -19,52 +21,52 @@ export interface ArchiveSearchRecord {
   keywords: string[];
 }
 
-export function buildSearchIndex(): ArchiveSearchRecord[] {
-  const timelineRecords: ArchiveSearchRecord[] =
-    getTimelines().map((timeline) => ({
+export async function buildSearchIndex(): Promise<ArchiveSearchRecord[]> {
+  const [timelines, series, characters, mobileSuits] = await Promise.all([
+    getTimelinesFromDatabase(),
+    getAllSeriesFromDatabase(),
+    getCharactersFromDatabase(),
+    getMobileSuitsFromDatabase(),
+  ]);
+  const timelineRecords: ArchiveSearchRecord[] = timelines.map(
+    (timeline) => ({
       id: timeline.id,
       type: "timeline",
       title: timeline.name,
       subtitle: timeline.code,
       description: timeline.description,
       href: `/timelines/${timeline.id}`,
-      keywords: [
-        timeline.code,
-        timeline.name,
-        ...timeline.seriesIds,
-      ],
-    }));
+      keywords: [timeline.code, timeline.name, ...timeline.seriesIds],
+    }),
+  );
 
-  const seriesRecords: ArchiveSearchRecord[] =
-    getAllSeries().map((series) => ({
-      id: series.id,
-      type: "series",
-      title: series.titles.en,
-      subtitle: `${series.inUniverseYear} // ${series.mediaType}`,
-      description: series.synopsis,
-      href: `/series/${series.id}`,
-      keywords: [
-        series.titles.en,
-        series.titles.ja ?? "",
-        series.titles.vi ?? "",
-        series.inUniverseYear,
-        series.timelineId,
-        series.director ?? "",
-        ...series.characterIds,
-        ...series.mobileSuitIds,
-      ],
-    }));
+  const seriesRecords: ArchiveSearchRecord[] = series.map((series) => ({
+    id: series.id,
+    type: "series",
+    title: series.titles.en,
+    subtitle: `${series.inUniverseYear} // ${series.mediaType}`,
+    description: series.synopsis,
+    href: `/series/${series.id}`,
+    keywords: [
+      series.titles.en,
+      series.titles.ja ?? "",
+      series.titles.vi ?? "",
+      series.inUniverseYear,
+      series.timelineId,
+      series.director ?? "",
+      ...series.characterIds,
+      ...series.mobileSuitIds,
+    ],
+  }));
 
-  const characterRecords: ArchiveSearchRecord[] =
-    getCharacters().map((character) => ({
+  const characterRecords: ArchiveSearchRecord[] = characters.map(
+    (character) => ({
       id: character.id,
       type: "character",
       title: character.canonicalName,
-      subtitle:
-        character.eras[0]?.faction ?? "Faction unknown",
+      subtitle: character.eras[0]?.faction ?? "Faction unknown",
       description:
-        character.eras[0]?.biography ??
-        "Personnel biography unavailable.",
+        character.eras[0]?.biography ?? "Personnel biography unavailable.",
       href: `/characters/${character.id}`,
       keywords: [
         character.canonicalName,
@@ -78,10 +80,11 @@ export function buildSearchIndex(): ArchiveSearchRecord[] {
           ...era.pilotedUnitIds,
         ]),
       ],
-    }));
+    }),
+  );
 
-  const mobileSuitRecords: ArchiveSearchRecord[] =
-    getMobileSuits().map((mobileSuit) => ({
+  const mobileSuitRecords: ArchiveSearchRecord[] = mobileSuits.map(
+    (mobileSuit) => ({
       id: mobileSuit.id,
       type: "mobile-suit",
       title: mobileSuit.baseName,
@@ -99,15 +102,12 @@ export function buildSearchIndex(): ArchiveSearchRecord[] {
         ...mobileSuit.factionIds,
         ...mobileSuit.variants.flatMap((variant) => [
           variant.formName,
-          ...variant.armaments.map(
-            (armament) => armament.name,
-          ),
-          ...variant.specialSystems.map(
-            (system) => system.name,
-          ),
+          ...variant.armaments.map((armament) => armament.name),
+          ...variant.specialSystems.map((system) => system.name),
         ]),
       ],
-    }));
+    }),
+  );
 
   return [
     ...timelineRecords,

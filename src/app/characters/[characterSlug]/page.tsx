@@ -1,19 +1,13 @@
 import CombatCareer from "@/components/character/CombatCareer";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import {
-  ArrowLeft,
-  Radio,
-  Shield,
-  UserRound,
-  Volume2,
-} from "lucide-react";
+import { ArrowLeft, Radio, Shield, UserRound, Volume2 } from "lucide-react";
 
 import {
-  getCharacterById,
-  getCharacters,
-} from "@/lib/data/getCharacters";
-import { getSeriesById } from "@/lib/data/getSeries";
+  getCharacterByIdFromDatabase,
+  getCharactersFromDatabase,
+} from "@/lib/data/getCharactersFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
 
 interface CharacterProfilePageProps {
   params: Promise<{
@@ -21,17 +15,17 @@ interface CharacterProfilePageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return getCharacters().map((character) => ({
+export async function generateStaticParams() {
+  const characters = await getCharactersFromDatabase();
+
+  return characters.map((character) => ({
     characterSlug: character.id,
   }));
 }
 
-export async function generateMetadata({
-  params,
-}: CharacterProfilePageProps) {
+export async function generateMetadata({ params }: CharacterProfilePageProps) {
   const { characterSlug } = await params;
-  const character = getCharacterById(characterSlug);
+  const character = await getCharacterByIdFromDatabase(characterSlug);
 
   if (!character) {
     return {
@@ -49,11 +43,15 @@ export default async function CharacterProfilePage({
   params,
 }: CharacterProfilePageProps) {
   const { characterSlug } = await params;
-  const character = getCharacterById(characterSlug);
+  const character = await getCharacterByIdFromDatabase(characterSlug);
 
   if (!character) {
     notFound();
   }
+
+  const seriesRecords = await getAllSeriesFromDatabase();
+
+  const seriesMap = new Map(seriesRecords.map((series) => [series.id, series]));
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
@@ -136,7 +134,7 @@ export default async function CharacterProfilePage({
 
             <div className="mt-12 space-y-8">
               {character.eras.map((era, index) => {
-                const series = getSeriesById(era.seriesId);
+                const series = seriesMap.get(era.seriesId);
 
                 return (
                   <section
@@ -190,9 +188,9 @@ export default async function CharacterProfilePage({
                     </div>
 
                     <CombatCareer
-  characterId={character.id}
-  characterEraId={era.id}
-/>
+                      characterId={character.id}
+                      characterEraId={era.id}
+                    />
                   </section>
                 );
               })}
@@ -210,11 +208,7 @@ interface InformationPanelProps {
   value: string;
 }
 
-function InformationPanel({
-  icon,
-  label,
-  value,
-}: InformationPanelProps) {
+function InformationPanel({ icon, label, value }: InformationPanelProps) {
   return (
     <div className="border border-slate-800 bg-[#070A0F] p-4">
       <div className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-wider text-slate-500">

@@ -206,7 +206,8 @@ async function runImport() {
           base_weight_tons: specs.baseWeightTons ?? null,
           gross_weight_tons: specs.grossWeightTons ?? null,
           generator_type: specs.generatorType ?? null,
-          power_output_kw: specs.powerOutputKw ?? null,
+          power_output_kw:
+            specs.generatorOutputKw ?? specs.powerOutputKw ?? null,
           sensor_range_meters: specs.sensorRangeMeters ?? null,
           armor_material: specs.armorMaterial ?? null,
           crew: specs.crew ?? null,

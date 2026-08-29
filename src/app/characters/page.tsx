@@ -1,13 +1,8 @@
 import Link from "next/link";
-import {
-  ArrowLeft,
-  ChevronRight,
-  Radio,
-  UserRound,
-} from "lucide-react";
+import { ArrowLeft, ChevronRight, Radio, UserRound } from "lucide-react";
 
-import { getCharacters } from "@/lib/data/getCharacters";
-import { getSeriesById } from "@/lib/data/getSeries";
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
 
 export const metadata = {
   title: "Pilot Archive",
@@ -15,8 +10,13 @@ export const metadata = {
     "Browse pilots, commanders and notable characters from Gundam history.",
 };
 
-export default function CharactersPage() {
-  const characters = getCharacters();
+export default async function CharactersPage() {
+  const [characters, seriesRecords] = await Promise.all([
+    getCharactersFromDatabase(),
+    getAllSeriesFromDatabase(),
+  ]);
+
+  const seriesMap = new Map(seriesRecords.map((series) => [series.id, series]));
 
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
@@ -57,7 +57,9 @@ export default function CharactersPage() {
           <div className="mt-14 grid gap-6 md:grid-cols-2">
             {characters.map((character, index) => {
               const currentEra = character.eras[0];
-              const series = getSeriesById(currentEra.seriesId);
+              const series = currentEra
+                ? seriesMap.get(currentEra.seriesId)
+                : undefined;
 
               return (
                 <Link
@@ -90,7 +92,7 @@ export default function CharactersPage() {
 
                     <div className="mt-4 flex flex-wrap gap-2">
                       <span className="border border-cyan-400/30 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-cyan-400">
-                        {currentEra.faction}
+                        {currentEra?.faction ?? "Unknown faction"}{" "}
                       </span>
 
                       <span className="border border-slate-700 px-2 py-1 font-mono text-[9px] uppercase tracking-wider text-slate-400">

@@ -1,12 +1,15 @@
 import SeriesArchiveTabs from "@/components/series/SeriesArchiveTabs";
-import { getCharacterById } from "@/lib/data/getCharacters";
-import { getMobileSuitById } from "@/lib/data/getMobileSuits";
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, CalendarDays, Clapperboard, Radio } from "lucide-react";
 
-import { getAllSeries, getSeriesById } from "@/lib/data/getSeries";
-import { getTimelineById } from "@/lib/data/getTimelines";
+import {
+  getAllSeriesFromDatabase,
+  getSeriesByIdFromDatabase,
+} from "@/lib/data/getSeriesFromDatabase";
+import { getTimelineByIdFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 interface SeriesDetailPageProps {
   params: Promise<{
@@ -14,15 +17,17 @@ interface SeriesDetailPageProps {
   }>;
 }
 
-export function generateStaticParams() {
-  return getAllSeries().map((series) => ({
+export async function generateStaticParams() {
+  const seriesRecords = await getAllSeriesFromDatabase();
+
+  return seriesRecords.map((series) => ({
     seriesSlug: series.id,
   }));
 }
 
 export async function generateMetadata({ params }: SeriesDetailPageProps) {
   const { seriesSlug } = await params;
-  const series = getSeriesById(seriesSlug);
+  const series = await getSeriesByIdFromDatabase(seriesSlug);
 
   if (!series) {
     return {
@@ -40,16 +45,27 @@ export default async function SeriesDetailPage({
   params,
 }: SeriesDetailPageProps) {
   const { seriesSlug } = await params;
-  const series = getSeriesById(seriesSlug);
+  const series = await getSeriesByIdFromDatabase(seriesSlug);
 
   if (!series) {
     notFound();
   }
 
-  const timeline = getTimelineById(series.timelineId);
-  const castRecords = series.characterIds.flatMap((characterId) => {
-    const character = getCharacterById(characterId);
+  const [timeline, characters, mobileSuits] = await Promise.all([
+    getTimelineByIdFromDatabase(series.timelineId),
+    getCharactersFromDatabase(),
+    getMobileSuitsFromDatabase(),
+  ]);
 
+  const characterMap = new Map(
+    characters.map((character) => [character.id, character]),
+  );
+
+  const mobileSuitMap = new Map(
+    mobileSuits.map((mobileSuit) => [mobileSuit.id, mobileSuit]),
+  );
+  const castRecords = series.characterIds.flatMap((characterId) => {
+    const character = characterMap.get(characterId);
     if (!character) {
       return [];
     }
@@ -67,8 +83,7 @@ export default async function SeriesDetailPage({
   });
 
   const mobileSuitRecords = series.mobileSuitIds.flatMap((mobileSuitId) => {
-    const mobileSuit = getMobileSuitById(mobileSuitId);
-
+    const mobileSuit = mobileSuitMap.get(mobileSuitId);
     if (!mobileSuit) {
       return [];
     }
@@ -184,11 +199,11 @@ export default async function SeriesDetailPage({
         </h2>
 
         <div className="mt-10">
-  <SeriesArchiveTabs
-    cast={castRecords}
-    mobileSuits={mobileSuitRecords}
-  />
-</div>
+          <SeriesArchiveTabs
+            cast={castRecords}
+            mobileSuits={mobileSuitRecords}
+          />
+        </div>
       </section>
     </main>
   );
@@ -212,4 +227,3 @@ function InfoPanel({ label, value, icon }: InfoPanelProps) {
     </div>
   );
 }
-

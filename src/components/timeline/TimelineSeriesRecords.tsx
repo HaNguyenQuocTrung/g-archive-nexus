@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { ChevronRight, Clapperboard } from "lucide-react";
 
-import { getSeriesByTimelineId } from "@/lib/data/getSeries";
+import { getSeriesByTimelineIdFromDatabase } from "@/lib/data/getSeriesFromDatabase";
 
 interface TimelineSeriesRecordsProps {
   timelineId: string;
 }
 
-export default function TimelineSeriesRecords({
+export default async function TimelineSeriesRecords({
   timelineId,
 }: TimelineSeriesRecordsProps) {
-  const seriesRecords =
-    getSeriesByTimelineId(timelineId);
-
+  const seriesRecords = await getSeriesByTimelineIdFromDatabase(timelineId);
+  
   return (
     <section className="mt-12">
       <p
@@ -44,10 +43,7 @@ export default function TimelineSeriesRecords({
                 "bg-[#070A0F]",
               ].join(" ")}
             >
-              <Clapperboard
-                size={25}
-                className="text-cyan-400"
-              />
+              <Clapperboard size={25} className="text-cyan-400" />
             </div>
 
             <div className="min-w-0 flex-1">

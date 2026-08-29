@@ -1,12 +1,20 @@
 import type { MetadataRoute } from "next";
 
-import { getCharacters } from "@/lib/data/getCharacters";
-import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getAllSeries } from "@/lib/data/getSeries";
-import { getTimelines } from "@/lib/data/getTimelines";
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 import { siteConfig } from "@/config/site";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const [timelines, seriesRecords, characters, mobileSuits] = await Promise.all(
+    [
+      getTimelinesFromDatabase(),
+      getAllSeriesFromDatabase(),
+      getCharactersFromDatabase(),
+      getMobileSuitsFromDatabase(),
+    ],
+  );
   const staticRoutes = [
     {
       url: siteConfig.url,
@@ -45,45 +53,29 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   ];
 
-  const timelineRoutes = getTimelines().map(
-    (timeline) => ({
-      url:
-        `${siteConfig.url}/timelines/` +
-        timeline.id,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }),
-  );
+  const timelineRoutes = timelines.map((timeline) => ({
+    url: `${siteConfig.url}/timelines/` + timeline.id,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
-  const seriesRoutes = getAllSeries().map(
-    (series) => ({
-      url:
-        `${siteConfig.url}/series/` +
-        series.id,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }),
-  );
+  const seriesRoutes = seriesRecords.map((series) => ({
+    url: `${siteConfig.url}/series/` + series.id,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
-  const characterRoutes = getCharacters().map(
-    (character) => ({
-      url:
-        `${siteConfig.url}/characters/` +
-        character.id,
-      changeFrequency: "monthly" as const,
-      priority: 0.7,
-    }),
-  );
+  const characterRoutes = characters.map((character) => ({
+    url: `${siteConfig.url}/characters/` + character.id,
+    changeFrequency: "monthly" as const,
+    priority: 0.7,
+  }));
 
-  const mobileSuitRoutes = getMobileSuits().map(
-    (mobileSuit) => ({
-      url:
-        `${siteConfig.url}/mobile-suits/` +
-        mobileSuit.id,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    }),
-  );
+  const mobileSuitRoutes = mobileSuits.map((mobileSuit) => ({
+    url: `${siteConfig.url}/mobile-suits/` + mobileSuit.id,
+    changeFrequency: "monthly" as const,
+    priority: 0.8,
+  }));
 
   return [
     ...staticRoutes,

@@ -1,23 +1,32 @@
 import FeaturedPilots from "@/components/home/FeaturedPilots";
 import FeaturedUnits from "@/components/home/FeaturedUnits";
-import { getCharacters } from "@/lib/data/getCharacters";
-import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getTimelines } from "@/lib/data/getTimelines";
+import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
+import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 import Link from "next/link";
 import { ChevronRight, Radio, Search, Shield } from "lucide-react";
 
-export default function Home() {
-  const timelines = getTimelines();
-  const mobileSuits = getMobileSuits();
-  const characters = getCharacters();
+export default async function Home() {
+  const [timelines, seriesRecords, mobileSuits, characters] = await Promise.all(
+    [
+      getTimelinesFromDatabase(),
+      getAllSeriesFromDatabase(),
+      getMobileSuitsFromDatabase(),
+      getCharactersFromDatabase(),
+    ],
+  );
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <section className="relative overflow-hidden border-b border-slate-800">
         <div className="border-t border-slate-800">
-          <FeaturedUnits />
+          <FeaturedUnits units={mobileSuits} timelines={timelines} />{" "}
         </div>
         <div className="border-t border-slate-800">
-          <FeaturedPilots />
+          <FeaturedPilots
+            pilots={characters}
+            seriesRecords={seriesRecords}
+          />{" "}
         </div>
         <div className="absolute inset-0 bg-[linear-gradient(rgba(6,182,212,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(6,182,212,0.04)_1px,transparent_1px)] bg-[size:48px_48px]" />
 

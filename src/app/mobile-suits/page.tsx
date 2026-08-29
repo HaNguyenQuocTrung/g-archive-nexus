@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { ArrowLeft, ChevronRight, Cpu, Radio } from "lucide-react";
 
-import { getMobileSuits } from "@/lib/data/getMobileSuits";
-import { getTimelineById, getTimelines } from "@/lib/data/getTimelines";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
+import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 
 export const metadata = {
   title: "Mobile Suit Database",
@@ -24,8 +24,14 @@ export default async function MobileSuitsPage({
   const activeTimeline =
     typeof params.timeline === "string" ? params.timeline : "all";
 
-  const mobileSuits = getMobileSuits();
-  const timelines = getTimelines();
+  const [mobileSuits, timelines] = await Promise.all([
+    getMobileSuitsFromDatabase(),
+    getTimelinesFromDatabase(),
+  ]);
+
+  const timelineMap = new Map(
+    timelines.map((timeline) => [timeline.id, timeline]),
+  );
 
   const filteredMobileSuits =
     activeTimeline === "all"
@@ -106,7 +112,7 @@ export default async function MobileSuitsPage({
 
           <div className="mt-14 grid gap-6 md:grid-cols-2">
             {filteredMobileSuits.map((mobileSuit, index) => {
-              const timeline = getTimelineById(mobileSuit.timelineId);
+              const timeline = timelineMap.get(mobileSuit.timelineId);
 
               const primaryVariant = mobileSuit.variants[0];
 
@@ -161,7 +167,8 @@ export default async function MobileSuitsPage({
                     </div>
 
                     <p className="mt-6 line-clamp-2 leading-7 text-slate-400">
-                      {primaryVariant.description}
+                      {primaryVariant?.description ??
+                        "No configuration data registered"}{" "}
                     </p>
 
                     <div className="mt-7 grid grid-cols-3 gap-3 border-t border-slate-800 pt-5 text-center">
@@ -172,12 +179,12 @@ export default async function MobileSuitsPage({
 
                       <DatabaseValue
                         label="Weapons"
-                        value={primaryVariant.armaments.length}
+                        value={primaryVariant?.armaments.length ?? 0}
                       />
 
                       <DatabaseValue
                         label="Systems"
-                        value={primaryVariant.specialSystems.length}
+                        value={primaryVariant?.specialSystems.length ?? 0}
                       />
                     </div>
                   </div>
@@ -202,11 +209,7 @@ interface TimelineFilterProps {
   active: boolean;
 }
 
-function TimelineFilter({
-  label,
-  href,
-  active,
-}: TimelineFilterProps) {
+function TimelineFilter({ label, href, active }: TimelineFilterProps) {
   return (
     <Link
       href={href}
@@ -216,11 +219,7 @@ function TimelineFilter({
         "uppercase tracking-wider",
         "transition",
         active
-          ? [
-              "border-cyan-400",
-              "bg-cyan-400",
-              "text-slate-950",
-            ].join(" ")
+          ? ["border-cyan-400", "bg-cyan-400", "text-slate-950"].join(" ")
           : [
               "border-slate-700",
               "bg-[#070A0F]",

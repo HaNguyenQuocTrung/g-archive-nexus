@@ -1,37 +1,40 @@
 import Link from "next/link";
 import { ChevronRight, Wrench } from "lucide-react";
 
-import { getMobileSuitById } from "@/lib/data/getMobileSuits";
-import { getPilotLogsByCharacterId } from "@/lib/data/getPilotLogs";
+import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
+import { getPilotLogsByCharacterIdFromDatabase } from "@/lib/data/getPilotLogsFromDatabase";
 
 interface CombatCareerProps {
   characterId: string;
   characterEraId: string;
 }
 
-export default function CombatCareer({
+export default async function CombatCareer({
   characterId,
   characterEraId,
 }: CombatCareerProps) {
-  const logs = getPilotLogsByCharacterId(characterId)
-    .filter(
-      (log) =>
-        log.characterEraId === characterEraId,
-    );
+  const [characterLogs, mobileSuits] = await Promise.all([
+    getPilotLogsByCharacterIdFromDatabase(characterId),
+    getMobileSuitsFromDatabase(),
+  ]);
+
+  const logs = characterLogs.filter(
+    (log) => log.characterEraId === characterEraId,
+  );
+
+  const mobileSuitMap = new Map(
+    mobileSuits.map((mobileSuit) => [mobileSuit.id, mobileSuit]),
+  );
 
   return (
     <section className="mt-8 border-t border-slate-800 pt-7">
       <div className="flex items-center gap-3">
-        <Wrench
-          size={17}
-          className="text-cyan-400"
-        />
+        <Wrench size={17} className="text-cyan-400" />
 
         <h3
-          className={[
-            "font-mono text-xs uppercase",
-            "tracking-[0.2em]",
-          ].join(" ")}
+          className={["font-mono text-xs uppercase", "tracking-[0.2em]"].join(
+            " ",
+          )}
         >
           Combat Career
         </h3>
@@ -40,10 +43,8 @@ export default function CombatCareer({
       {logs.length > 0 ? (
         <div className="mt-5 grid gap-3 sm:grid-cols-2">
           {logs.map((log) => {
-            const mobileSuit = getMobileSuitById(
-              log.mobileSuitId,
-            );
-
+            const mobileSuit = mobileSuitMap.get(log.mobileSuitId);
+            
             const variant = mobileSuit?.variants.find(
               (item) => item.id === log.variantId,
             );
@@ -59,10 +60,9 @@ export default function CombatCareer({
                 ].join(" ")}
               >
                 <div
-                  className={[
-                    "flex items-start",
-                    "justify-between gap-4",
-                  ].join(" ")}
+                  className={["flex items-start", "justify-between gap-4"].join(
+                    " ",
+                  )}
                 >
                   <div>
                     <p
@@ -72,8 +72,7 @@ export default function CombatCareer({
                         "text-amber-400",
                       ].join(" ")}
                     >
-                      {mobileSuit?.modelNumber ??
-                        log.mobileSuitId}
+                      {mobileSuit?.modelNumber ?? log.mobileSuitId}
                     </p>
 
                     <h4
@@ -82,8 +81,7 @@ export default function CombatCareer({
                         "group-hover:text-cyan-400",
                       ].join(" ")}
                     >
-                      {mobileSuit?.baseName ??
-                        log.mobileSuitId}
+                      {mobileSuit?.baseName ?? log.mobileSuitId}
                     </h4>
 
                     <p
@@ -93,9 +91,7 @@ export default function CombatCareer({
                         "text-slate-500",
                       ].join(" ")}
                     >
-                      Form //{" "}
-                      {variant?.formName ??
-                        log.variantId}
+                      Form // {variant?.formName ?? log.variantId}
                     </p>
                   </div>
 

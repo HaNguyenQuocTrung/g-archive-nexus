@@ -24,8 +24,7 @@ export default async function SearchPage({
   const initialQuery =
     typeof params.q === "string" ? params.q : "";
 
-  const records = buildSearchIndex();
-
+const records = await buildSearchIndex();
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <header className="border-b border-slate-800">

@@ -1,19 +1,24 @@
 import Link from "next/link";
 import { ChevronRight, UserRound } from "lucide-react";
+import type { Character, Series } from "@/types";
 
-import { getCharacters } from "@/lib/data/getCharacters";
-import { getSeriesById } from "@/lib/data/getSeries";
+interface FeaturedPilotsProps {
+  pilots: Character[];
+  seriesRecords: Series[];
+}
 
-export default function FeaturedPilots() {
-  const pilots = getCharacters().slice(0, 4);
+export default function FeaturedPilots({
+  pilots,
+  seriesRecords,
+}: FeaturedPilotsProps) {
+  const featuredPilots = pilots.slice(0, 4);
+
+  const seriesMap = new Map(seriesRecords.map((series) => [series.id, series]));
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-20">
       <div
-        className={[
-          "mb-10 flex items-end",
-          "justify-between gap-6",
-        ].join(" ")}
+        className={["mb-10 flex items-end", "justify-between gap-6"].join(" ")}
       >
         <div>
           <p
@@ -25,9 +30,7 @@ export default function FeaturedPilots() {
             Sector 03 // Personnel Records
           </p>
 
-          <h2 className="mt-3 text-3xl font-bold uppercase">
-            Featured Pilots
-          </h2>
+          <h2 className="mt-3 text-3xl font-bold uppercase">Featured Pilots</h2>
         </div>
 
         <Link
@@ -43,9 +46,10 @@ export default function FeaturedPilots() {
       </div>
 
       <div className="grid gap-5 md:grid-cols-2">
-        {pilots.map((pilot, index) => {
+        {featuredPilots.map((pilot, index) => {
           const era = pilot.eras[0];
-          const series = getSeriesById(era.seriesId);
+
+          const series = era ? seriesMap.get(era.seriesId) : undefined;
 
           return (
             <Link
@@ -97,7 +101,7 @@ export default function FeaturedPilots() {
                 </h3>
 
                 <p className="mt-2 text-sm text-slate-500">
-                  {era.faction}
+                  {era?.faction ?? "Unknown faction"}
                 </p>
 
                 <p
@@ -107,7 +111,9 @@ export default function FeaturedPilots() {
                     "tracking-wider text-amber-400",
                   ].join(" ")}
                 >
-                  {series?.inUniverseYear ?? era.seriesId}
+                  {series?.inUniverseYear ??
+                    era?.seriesId ??
+                    "Unknown era"}{" "}
                 </p>
               </div>
 

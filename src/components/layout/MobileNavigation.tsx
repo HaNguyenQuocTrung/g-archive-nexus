@@ -14,6 +14,10 @@ const navigationItems = [
     href: "/series",
   },
   {
+    label: "Movies",
+    href: "/movies",
+  },
+  {
     label: "Mobile Suits",
     href: "/mobile-suits",
   },

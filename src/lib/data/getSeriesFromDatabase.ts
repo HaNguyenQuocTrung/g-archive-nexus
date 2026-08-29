@@ -11,12 +11,18 @@ interface SeriesRow {
     ja?: string;
     vi?: string;
   } | null;
-  format: Series["mediaType"] | null;
+  media_type: Series["mediaType"] | null;
   in_universe_year: string | null;
   release_year: number | null;
+  release_date: string | null;
+  end_year: number | null;
+  episode_count: number | null;
+  runtime_minutes: number | null;
   director: string | null;
   synopsis: string;
   status: string;
+  catalog_status: Series["catalogStatus"] | null;
+  official_url: string | null;
   timelines:
     | {
         slug: string;
@@ -68,12 +74,18 @@ export async function getAllSeriesFromDatabase(): Promise<Series[]> {
         slug,
         title,
         titles,
-        format,
+        media_type,
         in_universe_year,
         release_year,
+                release_date,
+        end_year,
+        episode_count,
+        runtime_minutes,
         director,
         synopsis,
         status,
+                catalog_status,
+        official_url,
         timelines (
           slug
         ),
@@ -101,13 +113,17 @@ export async function getAllSeriesFromDatabase(): Promise<Series[]> {
 
     return (data as SeriesRow[]).map((record) => ({
       id: record.slug,
+      releaseDate: record.release_date ?? undefined,
+      endYear: record.end_year ?? undefined,
+      episodeCount: record.episode_count ?? undefined,
+      runtimeMinutes: record.runtime_minutes ?? undefined,
       titles: {
         en: record.titles?.en ?? record.title,
         ja: record.titles?.ja,
         vi: record.titles?.vi,
       },
       timelineId: getRelatedSlug(record.timelines) ?? "unknown",
-      mediaType: record.format ?? "tv-series",
+      mediaType: record.media_type ?? "tv-series",
       inUniverseYear: record.in_universe_year ?? "Unknown",
       releaseYear: record.release_year ?? 0,
       director: record.director ?? undefined,
@@ -119,6 +135,8 @@ export async function getAllSeriesFromDatabase(): Promise<Series[]> {
         .map((relation) => getRelatedSlug(relation.mobile_suits))
         .filter((slug): slug is string => Boolean(slug)),
       status: record.status === "published" ? "published" : "draft",
+      catalogStatus: record.catalog_status ?? "planned",
+      officialUrl: record.official_url ?? undefined,
     }));
   } catch (error) {
     if (error instanceof Error) {

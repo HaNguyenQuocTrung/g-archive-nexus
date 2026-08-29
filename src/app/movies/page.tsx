@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowLeft, Radio } from "lucide-react";
+import { ArrowLeft, Film, Radio } from "lucide-react";
 
 import WorkArchiveList from "@/components/series/WorkArchiveList";
 import { getAllSeriesFromDatabase } from "@/lib/data/getSeriesFromDatabase";
@@ -7,26 +7,32 @@ import { getTimelinesFromDatabase } from "@/lib/data/getTimelinesFromDatabase";
 import type { MediaType } from "@/types";
 
 export const metadata = {
-  title: "Series Archive",
+  title: "Movie Archive",
   description:
-    "Browse Gundam television series, OVAs, ONAs and live-action series.",
+    "Browse Gundam movies, compilation films, short films and special-format productions.",
 };
 
-const seriesMediaTypes = new Set<MediaType>([
-  "tv-series",
-  "ova",
-  "ona",
-  "live-action-series",
+const movieMediaTypes = new Set<MediaType>([
+  "movie",
+  "compilation-movie",
+  "short-film",
+  "special",
+  "promotional-animation",
+  "live-action-movie",
+  "vr-experience",
+  "motion-comic",
+  "music-video",
+  "attraction-film",
 ]);
 
-export default async function SeriesPage() {
+export default async function MoviesPage() {
   const [allWorks, timelines] = await Promise.all([
     getAllSeriesFromDatabase(),
     getTimelinesFromDatabase(),
   ]);
 
-  const seriesRecords = allWorks.filter((work) =>
-    seriesMediaTypes.has(work.mediaType),
+  const movieRecords = allWorks.filter((work) =>
+    movieMediaTypes.has(work.mediaType),
   );
 
   return (
@@ -43,7 +49,7 @@ export default async function SeriesPage() {
 
           <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-emerald-400">
             <Radio size={13} className="animate-pulse" />
-            Series database online
+            Movie database online
           </div>
         </div>
       </header>
@@ -53,37 +59,42 @@ export default async function SeriesPage() {
 
         <div className="relative mx-auto max-w-7xl px-6 py-20">
           <p className="font-mono text-sm uppercase tracking-[0.3em] text-amber-400">
-            Sector 02 // Series Records
+            Sector 03 // Theatrical Records
           </p>
 
           <div className="mt-4 flex flex-wrap items-end justify-between gap-6">
             <div>
-              <h1 className="text-5xl font-black uppercase md:text-7xl">
-                Series Archive
-              </h1>
+              <div className="flex items-center gap-4">
+                <Film size={38} className="text-cyan-400" />
+
+                <h1 className="text-5xl font-black uppercase md:text-7xl">
+                  Movie Archive
+                </h1>
+              </div>
 
               <p className="mt-6 max-w-3xl text-lg leading-8 text-slate-400">
-                Browse Gundam television series, original video animation,
-                original net animation and live-action series.
+                Browse theatrical movies, compilation films, short films,
+                special productions, live-action works and immersive experiences
+                from the Gundam archive.
               </p>
             </div>
 
             <div className="border border-cyan-400/30 bg-[#0F172A]/90 px-6 py-4 text-right">
               <p className="font-mono text-[10px] uppercase tracking-wider text-slate-500">
-                Registered series
+                Registered movies
               </p>
 
               <p className="mt-2 font-mono text-3xl text-cyan-400">
-                {String(seriesRecords.length).padStart(2, "0")}
+                {String(movieRecords.length).padStart(2, "0")}
               </p>
             </div>
           </div>
 
           <div className="mt-14">
             <WorkArchiveList
-              records={seriesRecords}
+              records={movieRecords}
               timelines={timelines}
-              emptyMessage="No series records registered"
+              emptyMessage="No movie records registered"
             />
           </div>
         </div>

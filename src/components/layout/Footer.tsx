@@ -11,6 +11,14 @@ const footerLinks = [
     href: "/timelines",
   },
   {
+    label: "Series",
+    href: "/series",
+  },
+  {
+    label: "Movies",
+    href: "/movies",
+  },
+  {
     label: "Mobile Suits",
     href: "/mobile-suits",
   },
@@ -51,9 +59,8 @@ export default function Footer() {
               "leading-6 text-slate-500",
             ].join(" ")}
           >
-            A fan-made Mobile Suit intelligence
-            database covering timelines, series,
-            pilots, variants and technical records.
+            A fan-made Mobile Suit intelligence database covering timelines,
+            series, movies, pilots, variants and technical records.
           </p>
 
           <p
@@ -63,18 +70,12 @@ export default function Footer() {
               "text-slate-600",
             ].join(" ")}
           >
-            Not affiliated with Bandai Namco,
-            Sunrise or Sotsu
+            Not affiliated with Bandai Namco, Sunrise or Sotsu
           </p>
         </div>
 
         <div className="md:text-right">
-          <nav
-            className={[
-              "flex flex-wrap gap-5",
-              "md:justify-end",
-            ].join(" ")}
-          >
+          <nav className={["flex flex-wrap gap-5", "md:justify-end"].join(" ")}>
             {footerLinks.map((item) => (
               <Link
                 key={item.href}
@@ -92,9 +93,7 @@ export default function Footer() {
 
           <a
             href={
-              "https://github.com/" +
-              "HaNguyenQuocTrung/" +
-              "g-archive-nexus"
+              "https://github.com/" + "HaNguyenQuocTrung/" + "g-archive-nexus"
             }
             target="_blank"
             rel="noopener noreferrer"

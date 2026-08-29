@@ -13,6 +13,10 @@ const navigationItems = [
     href: "/series",
   },
   {
+    label: "Movies",
+    href: "/movies",
+  },
+  {
     label: "Mobile Suits",
     href: "/mobile-suits",
   },
@@ -39,10 +43,9 @@ export default function Header() {
       >
         <Link href="/" className="flex items-center gap-3">
           <div
-            className={[
-              "border border-cyan-400/50",
-              "p-2 text-cyan-400",
-            ].join(" ")}
+            className={["border border-cyan-400/50", "p-2 text-cyan-400"].join(
+              " ",
+            )}
           >
             <Database size={22} />
           </div>

@@ -5,14 +5,51 @@ export type MediaType =
   | "movie"
   | "ova"
   | "ona"
+  | "special"
+  | "compilation-movie"
+  | "short-film"
+  | "promotional-animation"
+  | "live-action-movie"
+  | "live-action-series"
+  | "vr-experience"
+  | "motion-comic"
+  | "music-video"
+  | "attraction-film"
   | "manga"
   | "novel"
   | "game";
+
+export type CatalogStatus =
+  | "planned"
+  | "in_progress"
+  | "complete"
+  | "verified";
 
 export interface LocalizedText {
   en: string;
   ja?: string;
   vi?: string;
+}
+
+export interface Series {
+  id: string;
+  titles: LocalizedText;
+  timelineId: string;
+  mediaType: MediaType;
+  inUniverseYear: string;
+  releaseYear: number;
+  releaseDate?: string;
+  endYear?: number;
+  episodeCount?: number;
+  runtimeMinutes?: number;
+  director?: string;
+  synopsis: string;
+  characterIds: string[];
+  mobileSuitIds: string[];
+  poster?: ArchiveImage;
+  status: ArchiveStatus;
+  catalogStatus: CatalogStatus;
+  officialUrl?: string;
 }
 
 export interface ArchiveImage {
@@ -36,21 +73,6 @@ export interface Timeline {
   status: ArchiveStatus;
   seriesIds: string[];
   coverImage?: ArchiveImage;
-}
-
-export interface Series {
-  id: string;
-  titles: LocalizedText;
-  timelineId: string;
-  mediaType: MediaType;
-  inUniverseYear: string;
-  releaseYear: number;
-  director?: string;
-  synopsis: string;
-  characterIds: string[];
-  mobileSuitIds: string[];
-  poster?: ArchiveImage;
-  status: ArchiveStatus;
 }
 
 export interface CharacterEra {

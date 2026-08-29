@@ -30,7 +30,7 @@ export const metadata: Metadata = {
   },
 
   description:
-    "A fan-made Mobile Suit intelligence database covering Gundam timelines, series, pilots, variants, specifications and armaments.",
+    "A fan-made Mobile Suit intelligence database covering Gundam timelines, series, movies, pilots, variants, specifications and armaments.",
 
   keywords: [
     "Gundam",
@@ -40,6 +40,7 @@ export const metadata: Metadata = {
     "Gundam Pilots",
     "Universal Century",
     "Cosmic Era",
+    "Gundam Movies",
   ],
 
   authors: [

@@ -1,9 +1,18 @@
+import SeriesConnectionsPanel from "@/components/series/SeriesConnectionsPanel";
+import { getSeriesConnectionsFromDatabase } from "@/lib/data/getSeriesConnectionsFromDatabase";
 import SeriesArchiveTabs from "@/components/series/SeriesArchiveTabs";
 import { getCharactersFromDatabase } from "@/lib/data/getCharactersFromDatabase";
 import { getMobileSuitsFromDatabase } from "@/lib/data/getMobileSuitsFromDatabase";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowLeft, CalendarDays, Clapperboard, Radio } from "lucide-react";
+import {
+  ArrowLeft,
+  CalendarDays,
+  Clapperboard,
+  Clock3,
+  ListVideo,
+  Radio,
+} from "lucide-react";
 
 import {
   getAllSeriesFromDatabase,
@@ -51,10 +60,11 @@ export default async function SeriesDetailPage({
     notFound();
   }
 
-  const [timeline, characters, mobileSuits] = await Promise.all([
+  const [timeline, characters, mobileSuits, connections] = await Promise.all([
     getTimelineByIdFromDatabase(series.timelineId),
     getCharactersFromDatabase(),
     getMobileSuitsFromDatabase(),
+    getSeriesConnectionsFromDatabase(series.id),
   ]);
 
   const characterMap = new Map(
@@ -97,22 +107,53 @@ export default async function SeriesDetailPage({
       },
     ];
   });
+  const movieMediaTypes: string[] = [
+    "movie",
+    "compilation-movie",
+    "short-film",
+    "special",
+    "promotional-animation",
+    "live-action-movie",
+    "vr-experience",
+    "motion-comic",
+    "music-video",
+    "attraction-film",
+  ];
 
+  const belongsToMovieArchive = movieMediaTypes.includes(series.mediaType);
+
+  const archiveHref = belongsToMovieArchive ? "/movies" : "/series";
+
+  const archiveLabel = belongsToMovieArchive
+    ? "Movie archive"
+    : "Series archive";
+
+  const releaseValue =
+    series.releaseDate ??
+    (series.releaseYear ? String(series.releaseYear) : "Not registered");
   return (
     <main className="min-h-screen bg-[#070A0F] text-slate-100">
       <header className="border-b border-slate-800">
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
           <Link
-            href="/series"
+            href={archiveHref}
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-wider text-slate-500 hover:text-cyan-400"
           >
             <ArrowLeft size={15} />
-            Series archive
+            {archiveLabel}{" "}
           </Link>
 
-          <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-emerald-400">
+          <div
+            className={[
+              "flex items-center gap-2 font-mono text-[10px]",
+              "uppercase tracking-wider",
+              series.catalogStatus === "verified"
+                ? "text-emerald-400"
+                : "text-amber-400",
+            ].join(" ")}
+          >
             <Radio size={13} className="animate-pulse" />
-            Record verified
+            Catalog // {series.catalogStatus.replaceAll("_", " ")}
           </div>
         </div>
       </header>
@@ -166,29 +207,53 @@ export default async function SeriesDetailPage({
               {series.synopsis}
             </p>
 
-            <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
               <InfoPanel label="Timeline" value={timeline?.name ?? "Unknown"} />
 
               <InfoPanel
                 label="Release"
-                value={String(series.releaseYear)}
+                value={releaseValue}
                 icon={<CalendarDays size={15} />}
               />
 
               <InfoPanel
                 label="Media type"
-                value={series.mediaType.replace("-", " ")}
+                value={series.mediaType.replaceAll("-", " ")}
               />
+
+              {series.episodeCount !== undefined && (
+                <InfoPanel
+                  label="Episode count"
+                  value={String(series.episodeCount)}
+                  icon={<ListVideo size={15} />}
+                />
+              )}
+
+              {series.runtimeMinutes !== undefined && (
+                <InfoPanel
+                  label="Runtime"
+                  value={`${series.runtimeMinutes} minutes`}
+                  icon={<Clock3 size={15} />}
+                />
+              )}
 
               <InfoPanel
                 label="Director"
                 value={series.director ?? "Not registered"}
               />
+
+              <InfoPanel
+                label="Catalog status"
+                value={series.catalogStatus.replaceAll("_", " ")}
+              />
             </div>
           </div>
         </div>
       </section>
-
+      <SeriesConnectionsPanel
+        relations={connections.relations}
+        sources={connections.sources}
+      />
       <section className="mx-auto max-w-7xl px-6 py-16">
         <p className="font-mono text-xs uppercase tracking-[0.3em] text-amber-400">
           Connected Records
